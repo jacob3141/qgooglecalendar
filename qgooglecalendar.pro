@@ -27,3 +27,23 @@ CONFIG += static
 
 TARGET = libqgooglecalendar
 
+HEADERS += \
+    googlecalendarservice.h \
+    resourcesAPIV3/colors.h \
+    resourcesAPIV3/events.h \
+    resourcesAPIV3/freebusy.h \
+    resourcesAPIV3/calendarlistentry.h \
+    resourcesAPIV3/aclrule.h \
+    resourcesAPIV3/calendar.h \
+    resourcesAPIV3/setting.h
+
+SOURCES += \
+    googlecalendarservice.cpp \
+    resourcesAPIV3/colors.cpp \
+    resourcesAPIV3/events.cpp \
+    resourcesAPIV3/freebusy.cpp \
+    resourcesAPIV3/calendarlistentry.cpp \
+    resourcesAPIV3/aclrule.cpp \
+    resourcesAPIV3/calendar.cpp \
+    resourcesAPIV3/setting.cpp
+
