@@ -21,14 +21,14 @@
 
 #pragma once
 
-// Qt includes
-#include <QString>
+// Own includes
+#include "resource.h"
 
 /**
  * CalendarList resource as specified by Google.
  * @see https://developers.google.com/google-apps/calendar/v3/reference/calendarList
  */
-class CalendarListEntry
+class CalendarListEntry : public Resource
 {
 public:
     explicit CalendarListEntry();
@@ -99,6 +99,18 @@ public:
     /** @returns Type of the resource ("calendar#calendarListEntry"). */
     QString kind();
 
+    /** @returns ETag of the resource. */
+    QString eTag() const;
+
+    /** @returns Identifier of the calendar. */
+    QString id() const;
+
+    /** @returns a json representation of this calendar list entry. */
+    QJsonObject toJsonObject() const;
+
+    /** Initializes this model from json. */
+    void fromJson(QJsonObject jsonObject);
+
     /** @returns The effective access role that the authenticated user has on
      * the calendar. Read-only. Possible values are:
      * "freeBusyReader" - Provides read access to free/busy information.
@@ -139,12 +151,6 @@ public:
 
     /** @returns The time zone of the calendar. Optional. Read-only. */
     QString timeZone() const;
-
-    /** @returns ETag of the resource. */
-    QString eTag() const;
-
-    /** @returns Identifier of the calendar. */
-    QString id() const;
 
     /**
      * @returns The summary that the authenticated user has set for this

@@ -22,7 +22,8 @@
 // Own includes
 #include "aclrule.h"
 
-AclRule::AclRule()
+AclRule::AclRule() :
+    Resource()
 {
 }
 
@@ -39,6 +40,17 @@ QString AclRule::eTag() const
 QString AclRule::id() const
 {
     return _id;
+}
+
+QJsonObject AclRule::toJsonObject() const
+{
+    // TODO
+    return QJsonObject();
+}
+
+void AclRule::fromJson(QJsonObject jsonObject)
+{
+    // TODO
 }
 
 AclRule::ScopeType AclRule::scopeType() const

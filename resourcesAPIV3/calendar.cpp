@@ -22,7 +22,8 @@
 // Own includes
 #include "calendar.h"
 
-Calendar::Calendar()
+Calendar::Calendar() :
+    Resource()
 {
 }
 
@@ -39,6 +40,17 @@ QString Calendar::eTag() const
 QString Calendar::id() const
 {
     return _id;
+}
+
+QJsonObject Calendar::toJsonObject() const
+{
+    // TODO
+    return QJsonObject();
+}
+
+void Calendar::fromJson(QJsonObject jsonObject)
+{
+    // TODO
 }
 
 QString Calendar::summary() const

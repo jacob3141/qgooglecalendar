@@ -22,7 +22,8 @@
 // Own includes
 #include "calendarlistentry.h"
 
-CalendarListEntry::CalendarListEntry()
+CalendarListEntry::CalendarListEntry() :
+    Resource()
 {
 }
 

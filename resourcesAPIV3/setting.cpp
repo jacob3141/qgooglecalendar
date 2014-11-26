@@ -22,7 +22,8 @@
 // Own includes
 #include "setting.h"
 
-Setting::Setting()
+Setting::Setting() :
+    Resource()
 {
 }
 
@@ -39,6 +40,17 @@ QString Setting::eTag() const
 QString Setting::id() const
 {
     return _id;
+}
+
+QJsonObject Setting::toJsonObject() const
+{
+    // TODO
+    return QJsonObject();
+}
+
+void Setting::fromJson(QJsonObject jsonObject)
+{
+    // TODO
 }
 
 QString Setting::value() const

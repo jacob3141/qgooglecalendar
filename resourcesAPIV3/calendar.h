@@ -21,16 +21,15 @@
 
 #pragma once
 
-// Qt includes
-#include <QString>
+// Own includes
+#include "resource.h"
 
 /**
  * Calendars resource as specified by Google.
  * @see https://developers.google.com/google-apps/calendar/v3/reference/calendars
  */
-class Calendar
+class Calendar : public Resource
 {
-    Q_OBJECT
 public:
     explicit Calendar();
 
@@ -42,6 +41,12 @@ public:
 
     /** @returns Identifier of the calendar. */
     QString id() const;
+
+    /** @returns a json representation of this calendar. */
+    QJsonObject toJsonObject() const;
+
+    /** Initializes this model from json. */
+    void fromJson(QJsonObject jsonObject);
 
     /** @returns Title of the calendar. */
     QString summary() const;

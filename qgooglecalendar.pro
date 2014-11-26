@@ -35,7 +35,8 @@ HEADERS += \
     resourcesAPIV3/calendarlistentry.h \
     resourcesAPIV3/aclrule.h \
     resourcesAPIV3/calendar.h \
-    resourcesAPIV3/setting.h
+    resourcesAPIV3/setting.h \
+    resourcesAPIV3/resource.h
 
 SOURCES += \
     googlecalendarservice.cpp \

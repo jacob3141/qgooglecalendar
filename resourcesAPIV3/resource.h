@@ -21,45 +21,31 @@
 
 #pragma once
 
-// Own includes
-#include "resource.h"
+// Qt includes
+#include <QString>
+#include <QJsonObject>
 
 /**
- * Settings resource as specified by Google.
- * @see https://developers.google.com/google-apps/calendar/v3/reference/settings
+ * Common resource interface.
  */
-class Setting : public Resource
+class Resource
 {
 public:
-    explicit Setting();
+    Resource() { }
+    virtual ~Resource() { }
 
-    /** @returns Type of the resource ("calendar#setting"). */
-    QString kind() const;
+    /** @returns Type of the resource. */
+    virtual QString kind() const = 0;
 
     /** @returns ETag of the resource. */
-    QString eTag() const;
+    virtual QString eTag() const = 0;
 
-    /** @returns The id of the user setting. */
-    QString id() const;
+    /** @returns Identifier of the resource. */
+    virtual QString id() const = 0;
 
-    /** @returns a json representation of this setting. */
-    QJsonObject toJsonObject() const;
+    /** @returns a json representation of this resource. */
+    virtual QJsonObject toJsonObject() const = 0;
 
     /** Initializes this model from json. */
-    void fromJson(QJsonObject jsonObject);
-
-    /**
-     * @returns Value of the user setting.
-     * The format of the value depends on the ID of the setting. It must always
-     * be a UTF-8 string of length up to 1024 characters.
-     */
-    QString value() const;
-
-    void setValue(QString value);
-
-private:
-    QString _eTag;
-    QString _id;
-    QString _value;
+    virtual void fromJson(QJsonObject jsonObject) = 0;
 };
-

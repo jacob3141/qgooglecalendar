@@ -21,14 +21,14 @@
 
 #pragma once
 
-// Qt includes
-#include <QString>
+// Own includes
+#include "resource.h"
 
 /**
  * Acl resource as specified by Google.
  * @see https://developers.google.com/google-apps/calendar/v3/reference/acl
  */
-class AclRule
+class AclRule : public Resource
 {
     Q_OBJECT
 public:
@@ -59,6 +59,12 @@ public:
 
     /** @returns Identifier of the ACL rule. */
     QString id() const;
+
+    /** @returns a json representation of this access control rule. */
+    QJsonObject toJsonObject() const;
+
+    /** Initializes this model from json. */
+    void fromJson(QJsonObject jsonObject);
 
     /**
      * The type of the scope. Possible values are:
