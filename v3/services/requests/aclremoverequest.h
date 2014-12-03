@@ -22,48 +22,35 @@
 #pragma once
 
 // Own includes
-#include "v3/services/acl.h"
-#include "v3/services/calendarlist.h"
-#include "v3/services/calendars.h"
-#include "v3/services/channels.h"
-#include "v3/services/colors.h"
-#include "v3/services/events.h"
-#include "v3/services/freebusy.h"
-#include "v3/services/settings.h"
-
-#include <QObject>
+#include "request.h"
+#include "v3/resources/calendar.h"
+#include "v3/services/requestdelegate.h"
 
 namespace APIV3 {
 
-class GoogleCalendarService : public QObject
-{
-    Q_OBJECT
+class AclRemoveRequest : public Request {
 public:
-    explicit GoogleCalendarService(QObject *parent = 0);
+    AclRemoveRequest(RequestDelegate *requestDelegate, QObject *parent = 0)
+        : Request(requestDelegate, parent) {
+    }
 
-    Acl             *acl();
-    CalendarList    *calendarList();
-    Calendars       *calendars();
-    Channels        *channels();
-    Colors          *colors();
-    Events          *events();
-    Freebusy        *freebusy();
-    Settings        *settings();
+    void configure(Calendar calendar, int ruleId) {
+        _calendar = calendar;
+        _ruleId = ruleId;
+    }
 
-signals:
+    QNetworkRequest *buildNetworkRequest() {
 
-public slots:
+    }
+
+
+    HttpMethod httpMethod() {
+        return HttpMethodPost;
+    }
 
 private:
-    Acl             *_acl;
-    CalendarList    *_calendarList;
-    Calendars       *_calendars;
-    Channels        *_channels;
-    Colors          *_colors;
-    Events          *_events;
-    Freebusy        *_freebusy;
-    Settings        *_settings;
+    Calendar _calendar;
+    int _ruleId;
 };
 
 } // APIV3
-

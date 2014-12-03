@@ -29,22 +29,55 @@ TARGET = libqgooglecalendar
 
 HEADERS += \
     googlecalendarservice.h \
-    resourcesAPIV3/colors.h \
-    resourcesAPIV3/events.h \
-    resourcesAPIV3/freebusy.h \
-    resourcesAPIV3/calendarlistentry.h \
-    resourcesAPIV3/aclrule.h \
-    resourcesAPIV3/calendar.h \
-    resourcesAPIV3/setting.h \
-    resourcesAPIV3/resource.h
+    v3/resources/calendarlistentry.h \
+    v3/resources/aclrule.h \
+    v3/resources/calendar.h \
+    v3/resources/setting.h \
+    v3/resources/resource.h \
+    v3/services/acl.h \
+    v3/services/calendars.h \
+    v3/services/calendarlist.h \
+    v3/services/settings.h \
+    v3/services/channels.h \
+    v3/services/colors.h \
+    v3/services/events.h \
+    v3/services/freebusy.h \
+    v3/resources/color.h \
+    v3/resources/event.h \
+    v3/services/service.h \
+    v3/services/requests/request.h \
+    v3/services/requests/aclremoverequest.h \
+    v3/services/requestdelegate.h \
+    v3/services/requests/aclgetrequest.h \
+    v3/services/requests/aclinsertrequest.h \
+    v3/services/requests/acllistrequest.h \
+    v3/services/requests/aclpatchrequest.h \
+    v3/services/requests/aclupdaterequest.h \
+    v3/services/requests/aclwatchrequest.h \
+    v3/services/requests/calendarlistremoverequest.h \
+    v3/services/requests/calendarlistgetrequest.h \
+    v3/services/requests/calendarlistinsertrequest.h \
+    v3/services/requests/calendarlistlistrequest.h \
+    v3/services/requests/calendarlistpatchrequest.h \
+    v3/services/requests/calendarlistupdaterequest.h \
+    v3/services/requests/calendarlistwatchrequest.h
 
 SOURCES += \
     googlecalendarservice.cpp \
-    resourcesAPIV3/colors.cpp \
-    resourcesAPIV3/events.cpp \
-    resourcesAPIV3/freebusy.cpp \
-    resourcesAPIV3/calendarlistentry.cpp \
-    resourcesAPIV3/aclrule.cpp \
-    resourcesAPIV3/calendar.cpp \
-    resourcesAPIV3/setting.cpp
+    v3/resources/calendarlistentry.cpp \
+    v3/resources/aclrule.cpp \
+    v3/resources/calendar.cpp \
+    v3/resources/setting.cpp \
+    v3/services/acl.cpp \
+    v3/services/calendars.cpp \
+    v3/services/calendarlist.cpp \
+    v3/services/settings.cpp \
+    v3/services/channels.cpp \
+    v3/services/events.cpp \
+    v3/services/freebusy.cpp \
+    v3/services/colors.cpp \
+    v3/resources/color.cpp \
+    v3/resources/event.cpp \
+    v3/services/service.cpp \
+    v3/services/requests/request.cpp
 

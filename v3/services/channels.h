@@ -21,31 +21,21 @@
 
 #pragma once
 
-// Qt includes
-#include <QString>
-#include <QJsonObject>
+// Own includes
+#include "v3/services/service.h"
 
-/**
- * Common resource interface.
- */
-class Resource
+namespace APIV3 {
+
+class Channels : public Service
 {
+    Q_OBJECT
 public:
-    Resource() { }
-    virtual ~Resource() { }
+    explicit Channels(QObject *parent = 0);
 
-    /** @returns Type of the resource. */
-    virtual QString kind() const = 0;
+signals:
 
-    /** @returns ETag of the resource. */
-    virtual QString eTag() const = 0;
+public slots:
 
-    /** @returns Identifier of the resource. */
-    virtual QString id() const = 0;
-
-    /** @returns a json representation of this resource. */
-    virtual QJsonObject toJsonObject() const = 0;
-
-    /** Initializes this model from json. */
-    virtual void fromJson(QJsonObject jsonObject) = 0;
 };
+
+} // APIV3

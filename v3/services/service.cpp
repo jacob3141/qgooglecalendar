@@ -20,9 +20,23 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // Own includes
-#include "colors.h"
+#include "service.h"
 
-Colors::Colors(QObject *parent) :
+namespace APIV3 {
+
+Service::Service(QObject *parent) :
     QObject(parent)
 {
 }
+
+int Service::operationTimeout()
+{
+    return _operationTimeout;
+}
+
+void Service::setOperationTimeout(int timeout)
+{
+    _operationTimeout = timeout;
+}
+
+} // APIV3

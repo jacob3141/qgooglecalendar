@@ -24,6 +24,8 @@
 // Own includes
 #include "resource.h"
 
+namespace APIV3 {
+
 /**
  * CalendarList resource as specified by Google.
  * @see https://developers.google.com/google-apps/calendar/v3/reference/calendarList
@@ -200,31 +202,48 @@ public:
     /**  @returns The list of notifications set for this calendar. */
     QList<Notification> notifications() const;
 
+    /** Sets the summary override. */
     void setSummaryOverride(QString summaryOverride);
+
+    /** Sets the color id. */
     void setColorId(QString colorId);
+
+    /** Sets the background color. */
     void setBackgroundColor(QString backgroundColor);
+
+    /** Sets the foreground color. */
     void setForegroundColor(QString foregroundColor);
+
+    /** Sets the hidden-flag. */
     void setHidden(bool hidden);
+
+    /** Sets the selected-flag. */
     void setSelected(bool selected);
+
+    /** Sets the default reminders. */
     void setDefaultReminders(QList<DefaultReminder> defaultReminders);
+
+    /** Sets the notifications. */
     void setNotifications(QList<Notification> notifications);
 
 private:
-    QString _eTag;
-    QString _id;
-    QString _summary;
-    QString _description;
-    QString _location;
-    QString _timeZone;
-    QString _summaryOverride;
-    QString _colorId;
-    QString _backgroundColor;
-    QString _foregroundColor;
-    bool _hidden;
-    bool _selected;
-    AccessRole _accessRole;
-    QList<DefaultReminder> _defaultReminders;
-    QList<Notification> _notifications;
-    bool _primary;
-    bool _deleted;
+    QString                 _eTag;
+    QString                 _id;
+    QString                 _summary;
+    QString                 _description;
+    QString                 _location;
+    QString                 _timeZone;
+    QString                 _summaryOverride;
+    QString                 _colorId;
+    QString                 _backgroundColor;
+    QString                 _foregroundColor;
+    bool                    _hidden;
+    bool                    _selected;
+    AccessRole              _accessRole;
+    QList<DefaultReminder>  _defaultReminders;
+    QList<Notification>     _notifications;
+    bool                    _primary;
+    bool                    _deleted;
 };
+
+} // APIV3

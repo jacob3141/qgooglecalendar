@@ -22,47 +22,20 @@
 #pragma once
 
 // Own includes
-#include "v3/services/acl.h"
-#include "v3/services/calendarlist.h"
-#include "v3/services/calendars.h"
-#include "v3/services/channels.h"
-#include "v3/services/colors.h"
-#include "v3/services/events.h"
-#include "v3/services/freebusy.h"
-#include "v3/services/settings.h"
-
-#include <QObject>
+#include "v3/services/service.h"
 
 namespace APIV3 {
 
-class GoogleCalendarService : public QObject
+/**
+ * Service for Calendars endpoint as specified by Google.
+ * @see https://developers.google.com/google-apps/calendar/v3/reference/calendars
+ */
+class Calendars : public Service
 {
     Q_OBJECT
 public:
-    explicit GoogleCalendarService(QObject *parent = 0);
+    explicit Calendars(QObject *parent = 0);
 
-    Acl             *acl();
-    CalendarList    *calendarList();
-    Calendars       *calendars();
-    Channels        *channels();
-    Colors          *colors();
-    Events          *events();
-    Freebusy        *freebusy();
-    Settings        *settings();
-
-signals:
-
-public slots:
-
-private:
-    Acl             *_acl;
-    CalendarList    *_calendarList;
-    Calendars       *_calendars;
-    Channels        *_channels;
-    Colors          *_colors;
-    Events          *_events;
-    Freebusy        *_freebusy;
-    Settings        *_settings;
 };
 
 } // APIV3

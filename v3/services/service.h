@@ -21,48 +21,26 @@
 
 #pragma once
 
-// Own includes
-#include "v3/services/acl.h"
-#include "v3/services/calendarlist.h"
-#include "v3/services/calendars.h"
-#include "v3/services/channels.h"
-#include "v3/services/colors.h"
-#include "v3/services/events.h"
-#include "v3/services/freebusy.h"
-#include "v3/services/settings.h"
-
+// Qt includes
 #include <QObject>
+#include <QMutex>
 
 namespace APIV3 {
 
-class GoogleCalendarService : public QObject
+class Service : public QObject
 {
-    Q_OBJECT
 public:
-    explicit GoogleCalendarService(QObject *parent = 0);
+    Service(QObject *parent = 0);
 
-    Acl             *acl();
-    CalendarList    *calendarList();
-    Calendars       *calendars();
-    Channels        *channels();
-    Colors          *colors();
-    Events          *events();
-    Freebusy        *freebusy();
-    Settings        *settings();
-
-signals:
+    /** @returns the operation timeout in milliseconds. */
+    int operationTimeout();
 
 public slots:
+    /** Sets the operation timeout in milliseconds. */
+    void setOperationTimeout(int timeout);
 
-private:
-    Acl             *_acl;
-    CalendarList    *_calendarList;
-    Calendars       *_calendars;
-    Channels        *_channels;
-    Colors          *_colors;
-    Events          *_events;
-    Freebusy        *_freebusy;
-    Settings        *_settings;
+protected:
+    int _operationTimeout;
 };
 
 } // APIV3

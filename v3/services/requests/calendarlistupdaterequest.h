@@ -19,10 +19,38 @@
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-// Own includes
-#include "events.h"
+#pragma once
 
-Events::Events(QObject *parent) :
-    QObject(parent)
-{
-}
+// Own includes
+#include "request.h"
+#include "v3/resources/calendar.h"
+#include "v3/resources/aclrule.h"
+#include "v3/services/requestdelegate.h"
+
+namespace APIV3 {
+
+class CalendarListUpdateRequest : public Request {
+public:
+    CalendarListUpdateRequest(RequestDelegate *requestDelegate, QObject *parent = 0)
+        : Request(requestDelegate, parent) {
+    }
+
+    void configure(Calendar calendar, int ruleId) {
+        _calendar = calendar;
+        _ruleId = ruleId;
+    }
+
+    QNetworkRequest *buildNetworkRequest() {
+
+    }
+
+    HttpMethod httpMethod() {
+        return HttpMethodGet;
+    }
+
+private:
+    Calendar _calendar;
+    int _ruleId;
+};
+
+} // APIV3

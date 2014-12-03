@@ -19,51 +19,80 @@
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-#pragma once
-
 // Own includes
-#include "v3/services/acl.h"
-#include "v3/services/calendarlist.h"
-#include "v3/services/calendars.h"
-#include "v3/services/channels.h"
-#include "v3/services/colors.h"
-#include "v3/services/events.h"
-#include "v3/services/freebusy.h"
-#include "v3/services/settings.h"
-
-#include <QObject>
+#include "calendar.h"
 
 namespace APIV3 {
 
-class GoogleCalendarService : public QObject
+Calendar::Calendar() :
+    Resource()
 {
-    Q_OBJECT
-public:
-    explicit GoogleCalendarService(QObject *parent = 0);
+}
 
-    Acl             *acl();
-    CalendarList    *calendarList();
-    Calendars       *calendars();
-    Channels        *channels();
-    Colors          *colors();
-    Events          *events();
-    Freebusy        *freebusy();
-    Settings        *settings();
+QString Calendar::kind() const
+{
+    return "calendar#calendar";
+}
 
-signals:
+QString Calendar::eTag() const
+{
+    return _eTag;
+}
 
-public slots:
+QString Calendar::id() const
+{
+    return _id;
+}
 
-private:
-    Acl             *_acl;
-    CalendarList    *_calendarList;
-    Calendars       *_calendars;
-    Channels        *_channels;
-    Colors          *_colors;
-    Events          *_events;
-    Freebusy        *_freebusy;
-    Settings        *_settings;
-};
+QJsonObject Calendar::toJsonObject() const
+{
+    // TODO
+    return QJsonObject();
+}
+
+void Calendar::fromJson(QJsonObject jsonObject)
+{
+    // TODO
+}
+
+QString Calendar::summary() const
+{
+    return _summary;
+}
+
+QString Calendar::description() const
+{
+    return _description;
+}
+
+QString Calendar::location() const
+{
+    return _location;
+}
+
+QString Calendar::timeZone() const
+{
+    return _timeZone;
+}
+
+void Calendar::setSummary(QString summary)
+{
+    _summary = summary;
+}
+
+void Calendar::setDescription(QString description)
+{
+    _description = description;
+}
+
+void Calendar::setLocation(QString location)
+{
+    _location = location;
+}
+
+void Calendar::setTimeZone(QString timeZone)
+{
+    _timeZone = timeZone;
+}
 
 } // APIV3
-

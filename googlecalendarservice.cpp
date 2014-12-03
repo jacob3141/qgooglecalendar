@@ -21,7 +21,59 @@
 
 #include "googlecalendarservice.h"
 
+namespace APIV3 {
+
 GoogleCalendarService::GoogleCalendarService(QObject *parent) :
     QObject(parent)
 {
+    _acl            = new Acl(this);
+    _calendarList   = new CalendarList(this);
+    _calendars      = new Calendars(this);
+    _channels       = new Channels(this);
+    _colors         = new Colors(this);
+    _events         = new Events(this);
+    _freebusy       = new Freebusy(this);
+    _settings       = new Settings(this);
 }
+
+Acl *GoogleCalendarService::acl()
+{
+    return _acl;
+}
+
+CalendarList *GoogleCalendarService::calendarList()
+{
+    return _calendarList;
+}
+
+Calendars *GoogleCalendarService::calendars()
+{
+    return _calendars;
+}
+
+Channels *GoogleCalendarService::channels()
+{
+    return _channels;
+}
+
+Colors *GoogleCalendarService::colors()
+{
+    return _colors;
+}
+
+Events *GoogleCalendarService::events()
+{
+    return _events;
+}
+
+Freebusy *GoogleCalendarService::freebusy()
+{
+    return _freebusy;
+}
+
+Settings *GoogleCalendarService::settings()
+{
+    return _settings;
+}
+
+} // APIV3

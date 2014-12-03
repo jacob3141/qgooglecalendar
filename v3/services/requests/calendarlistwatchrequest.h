@@ -21,18 +21,36 @@
 
 #pragma once
 
-// Qt includes
-#include <QObject>
+// Own includes
+#include "request.h"
+#include "v3/resources/calendar.h"
+#include "v3/resources/aclrule.h"
+#include "v3/services/requestdelegate.h"
 
-class Colors : public QObject
-{
-    Q_OBJECT
+namespace APIV3 {
+
+class CalendarListWatchRequest : public Request {
 public:
-    explicit Colors(QObject *parent = 0);
+    CalendarListWatchRequest(RequestDelegate *requestDelegate, QObject *parent = 0)
+        : Request(requestDelegate, parent) {
+    }
 
-signals:
+    void configure(Calendar calendar, int ruleId) {
+        _calendar = calendar;
+        _ruleId = ruleId;
+    }
 
-public slots:
+    QNetworkRequest *buildNetworkRequest() {
 
+    }
+
+    HttpMethod httpMethod() {
+        return HttpMethodGet;
+    }
+
+private:
+    Calendar _calendar;
+    int _ruleId;
 };
 
+} // APIV3

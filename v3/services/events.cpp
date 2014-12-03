@@ -19,20 +19,13 @@
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-#pragma once
+#include "events.h"
 
-// Qt includes
-#include <QObject>
+namespace APIV3 {
 
-class Events : public QObject
+Events::Events(QObject *parent) :
+    Service(parent)
 {
-    Q_OBJECT
-public:
-    explicit Events(QObject *parent = 0);
+}
 
-signals:
-
-public slots:
-
-};
-
+} // APIV3

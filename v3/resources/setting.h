@@ -22,48 +22,47 @@
 #pragma once
 
 // Own includes
-#include "v3/services/acl.h"
-#include "v3/services/calendarlist.h"
-#include "v3/services/calendars.h"
-#include "v3/services/channels.h"
-#include "v3/services/colors.h"
-#include "v3/services/events.h"
-#include "v3/services/freebusy.h"
-#include "v3/services/settings.h"
-
-#include <QObject>
+#include "resource.h"
 
 namespace APIV3 {
 
-class GoogleCalendarService : public QObject
+/**
+ * Setting resource as specified by Google.
+ * @see https://developers.google.com/google-apps/calendar/v3/reference/settings
+ */
+class Setting : public Resource
 {
-    Q_OBJECT
 public:
-    explicit GoogleCalendarService(QObject *parent = 0);
+    explicit Setting();
 
-    Acl             *acl();
-    CalendarList    *calendarList();
-    Calendars       *calendars();
-    Channels        *channels();
-    Colors          *colors();
-    Events          *events();
-    Freebusy        *freebusy();
-    Settings        *settings();
+    /** @returns Type of the resource ("calendar#setting"). */
+    QString kind() const;
 
-signals:
+    /** @returns ETag of the resource. */
+    QString eTag() const;
 
-public slots:
+    /** @returns The id of the user setting. */
+    QString id() const;
+
+    /** @returns a json representation of this setting. */
+    QJsonObject toJsonObject() const;
+
+    /** Initializes this model from json. */
+    void fromJson(QJsonObject jsonObject);
+
+    /**
+     * @returns Value of the user setting.
+     * The format of the value depends on the ID of the setting. It must always
+     * be a UTF-8 string of length up to 1024 characters.
+     */
+    QString value() const;
+
+    void setValue(QString value);
 
 private:
-    Acl             *_acl;
-    CalendarList    *_calendarList;
-    Calendars       *_calendars;
-    Channels        *_channels;
-    Colors          *_colors;
-    Events          *_events;
-    Freebusy        *_freebusy;
-    Settings        *_settings;
+    QString _eTag;
+    QString _id;
+    QString _value;
 };
 
 } // APIV3
-

@@ -24,6 +24,8 @@
 // Own includes
 #include "resource.h"
 
+namespace APIV3 {
+
 /**
  * Acl resource as specified by Google.
  * @see https://developers.google.com/google-apps/calendar/v3/reference/acl
@@ -98,15 +100,21 @@ public:
      */
     Role role() const;
 
+    /** Sets the scope type. */
     void setScopeType(ScopeType scopeType);
+
+    /** Sets the scope value. */
     void setScopeValue(QString scopeValue);
+
+    /** Sets the role. */
     void setRole(Role role);
 
 private:
-    QString _eTag;
-    QString _id;
-    ScopeType _scopeType;
-    QString _scopeValue;
-    Role _role;
+    QString     _eTag;
+    QString     _id;
+    ScopeType   _scopeType;
+    QString     _scopeValue;
+    Role        _role;
 };
 
+} // APIV3

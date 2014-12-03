@@ -19,47 +19,38 @@
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
+#pragma once
+
 // Own includes
-#include "setting.h"
+#include "request.h"
+#include "v3/resources/calendar.h"
+#include "v3/resources/aclrule.h"
+#include "v3/services/requestdelegate.h"
 
-Setting::Setting() :
-    Resource()
-{
-}
+namespace APIV3 {
 
-QString Setting::kind() const
-{
-    return "calendar#setting";
-}
+class CalendarListPatchRequest : public Request {
+public:
+    CalendarListPatchRequest(RequestDelegate *requestDelegate, QObject *parent = 0)
+        : Request(requestDelegate, parent) {
+    }
 
-QString Setting::eTag() const
-{
-    return _eTag;
-}
+    void configure(Calendar calendar, int ruleId) {
+        _calendar = calendar;
+        _ruleId = ruleId;
+    }
 
-QString Setting::id() const
-{
-    return _id;
-}
+    QNetworkRequest *buildNetworkRequest() {
 
-QJsonObject Setting::toJsonObject() const
-{
-    // TODO
-    return QJsonObject();
-}
+    }
 
-void Setting::fromJson(QJsonObject jsonObject)
-{
-    // TODO
-}
+    HttpMethod httpMethod() {
+        return HttpMethodGet;
+    }
 
-QString Setting::value() const
-{
-    return _value;
-}
+private:
+    Calendar _calendar;
+    int _ruleId;
+};
 
-void Setting::setValue(QString value)
-{
-    _value = value;
-}
-
+} // APIV3

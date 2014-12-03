@@ -21,18 +21,22 @@
 
 #pragma once
 
-// Qt includes
-#include <QObject>
+// Own includes
+#include "v3/services/service.h"
 
-class Freebusy : public QObject
+/**
+ * Service for Settings endpoint as specified by Google.
+ * @see https://developers.google.com/google-apps/calendar/v3/reference/settings
+ */
+namespace APIV3 {
+
+class Settings : public Service
 {
     Q_OBJECT
 public:
-    explicit Freebusy(QObject *parent = 0);
-
-signals:
-
-public slots:
+    explicit Settings(QObject *parent = 0);
 
 };
+
+} // APIV3
 

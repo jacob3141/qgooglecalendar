@@ -20,75 +20,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // Own includes
-#include "calendar.h"
+#include "event.h"
 
-Calendar::Calendar() :
+namespace APIV3 {
+
+Event::Event() :
     Resource()
 {
 }
 
-QString Calendar::kind() const
-{
-    return "calendar#calendar";
-}
-
-QString Calendar::eTag() const
-{
-    return _eTag;
-}
-
-QString Calendar::id() const
-{
-    return _id;
-}
-
-QJsonObject Calendar::toJsonObject() const
-{
-    // TODO
-    return QJsonObject();
-}
-
-void Calendar::fromJson(QJsonObject jsonObject)
-{
-    // TODO
-}
-
-QString Calendar::summary() const
-{
-    return _summary;
-}
-
-QString Calendar::description() const
-{
-    return _description;
-}
-
-QString Calendar::location() const
-{
-    return _location;
-}
-
-QString Calendar::timeZone() const
-{
-    return _timeZone;
-}
-
-void Calendar::setSummary(QString summary)
-{
-    _summary = summary;
-}
-
-void Calendar::setDescription(QString description)
-{
-    _description = description;
-}
-
-void Calendar::setLocation(QString location)
-{
-    _location = location;
-}
-
-void Calendar::setTimeZone(QString timeZone)
-{
-    _timeZone = timeZone;
-}
+} // APIV3

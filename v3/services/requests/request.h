@@ -22,48 +22,82 @@
 #pragma once
 
 // Own includes
-#include "v3/services/acl.h"
-#include "v3/services/calendarlist.h"
-#include "v3/services/calendars.h"
-#include "v3/services/channels.h"
-#include "v3/services/colors.h"
-#include "v3/services/events.h"
-#include "v3/services/freebusy.h"
-#include "v3/services/settings.h"
+#include "v3/services/requestdelegate.h"
 
+// Qt includes
+#include <QNetworkAccessManager>
+#include <QMutex>
 #include <QObject>
+#include <QThread>
 
 namespace APIV3 {
 
-class GoogleCalendarService : public QObject
+/**
+ *
+ */
+class Request : public QObject
 {
     Q_OBJECT
 public:
-    explicit GoogleCalendarService(QObject *parent = 0);
+    enum HttpMethod {
+        HttpMethodGet,
+        HttpMethodPost,
+        HttpMethodDelete
+    };
 
-    Acl             *acl();
-    CalendarList    *calendarList();
-    Calendars       *calendars();
-    Channels        *channels();
-    Colors          *colors();
-    Events          *events();
-    Freebusy        *freebusy();
-    Settings        *settings();
+    Request(RequestDelegate *requestDelegate, QObject *parent = 0);
+    virtual ~Request();
 
-signals:
+    /**
+     * Performs a transaction synchronously, ie. the executing thread will be
+     * blocked until a reply has been received.
+     * @param timeout The maximum time in seconds after the operation times out.
+     * @returns true, if the transaction could be initiated, false otherwise.
+     */
+    bool performSync(int timeout = 30);
 
-public slots:
+    /**
+     * Performs a transaction asychronously, ie. the executing thread will not
+     * be blocked.
+     * @returns true, if the transaction could be initiated, false otherwise.
+     */
+    bool performAsync(int timeout = 30);
+
+    /**
+     * Supposed to supply the transaction with a network request.
+     * @returns the network request.
+     */
+    virtual QNetworkRequest *buildNetworkRequest() = 0;
+
+    /**
+     * Supposed to return the appropriate http method.
+     * @returns the http method.
+     */
+    virtual HttpMethod httpMethod();
+
+private slots:
+    /**
+     * @brief receivedNetworkReply
+     * @param networkReply
+     */
+    void receivedNetworkReply(QNetworkReply *networkReply);
 
 private:
-    Acl             *_acl;
-    CalendarList    *_calendarList;
-    Calendars       *_calendars;
-    Channels        *_channels;
-    Colors          *_colors;
-    Events          *_events;
-    Freebusy        *_freebusy;
-    Settings        *_settings;
+    /**
+     * @brief startTransaction
+     * @param timeout
+     * @return
+     */
+    bool startRequest(int timeout);
+
+    /**
+     * @brief block
+     */
+    void block();
+
+    RequestDelegate *_requestDelegate;
+    QNetworkAccessManager _networkAccessManager;
+    QMutex *_requestMutex;
 };
 
 } // APIV3
-

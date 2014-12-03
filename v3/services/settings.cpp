@@ -20,65 +20,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // Own includes
-#include "aclrule.h"
+#include "settings.h"
 
-AclRule::AclRule() :
-    Resource()
+namespace APIV3 {
+
+Settings::Settings(QObject *parent) :
+    Service(parent)
 {
 }
 
-QString AclRule::kind() const
-{
-    return "calendar#aclRule";
-}
+} // APIV3
 
-QString AclRule::eTag() const
-{
-    return _eTag;
-}
-
-QString AclRule::id() const
-{
-    return _id;
-}
-
-QJsonObject AclRule::toJsonObject() const
-{
-    // TODO
-    return QJsonObject();
-}
-
-void AclRule::fromJson(QJsonObject jsonObject)
-{
-    // TODO
-}
-
-AclRule::ScopeType AclRule::scopeType() const
-{
-    return _scopeType;
-}
-
-QString AclRule::scopeValue() const
-{
-    return _scopeValue;
-}
-
-AclRule::Role AclRule::role() const
-{
-    return _role;
-}
-
-void AclRule::setScopeType(AclRule::ScopeType scopeType)
-{
-    _scopeType = scopeType;
-}
-
-void AclRule::setScopeValue(QString scopeValue)
-{
-    _scopeValue = scopeValue;
-}
-
-void AclRule::setRole(AclRule::Role role)
-{
-    _role = role;
-}

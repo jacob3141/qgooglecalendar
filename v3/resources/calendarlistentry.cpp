@@ -22,6 +22,8 @@
 // Own includes
 #include "calendarlistentry.h"
 
+namespace APIV3 {
+
 CalendarListEntry::CalendarListEntry() :
     Resource()
 {
@@ -75,6 +77,17 @@ QString CalendarListEntry::eTag() const
 QString CalendarListEntry::id() const
 {
     return _id;
+}
+
+QJsonObject CalendarListEntry::toJsonObject() const
+{
+    // TODO
+    return QJsonObject();
+}
+
+void CalendarListEntry::fromJson(QJsonObject jsonObject)
+{
+    // TODO
 }
 
 QString CalendarListEntry::summaryOverride() const
@@ -156,3 +169,5 @@ void CalendarListEntry::setNotifications(QList<CalendarListEntry::Notification> 
 {
     _notifications = notifications;
 }
+
+} // APIV3

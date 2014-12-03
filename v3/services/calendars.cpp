@@ -19,47 +19,14 @@
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-#pragma once
-
 // Own includes
-#include "resource.h"
+#include "calendars.h"
 
-/**
- * Settings resource as specified by Google.
- * @see https://developers.google.com/google-apps/calendar/v3/reference/settings
- */
-class Setting : public Resource
+namespace APIV3 {
+
+Calendars::Calendars(QObject *parent) :
+    Service(parent)
 {
-public:
-    explicit Setting();
+}
 
-    /** @returns Type of the resource ("calendar#setting"). */
-    QString kind() const;
-
-    /** @returns ETag of the resource. */
-    QString eTag() const;
-
-    /** @returns The id of the user setting. */
-    QString id() const;
-
-    /** @returns a json representation of this setting. */
-    QJsonObject toJsonObject() const;
-
-    /** Initializes this model from json. */
-    void fromJson(QJsonObject jsonObject);
-
-    /**
-     * @returns Value of the user setting.
-     * The format of the value depends on the ID of the setting. It must always
-     * be a UTF-8 string of length up to 1024 characters.
-     */
-    QString value() const;
-
-    void setValue(QString value);
-
-private:
-    QString _eTag;
-    QString _id;
-    QString _value;
-};
-
+} // APIV3

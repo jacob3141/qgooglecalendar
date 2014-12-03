@@ -19,10 +19,13 @@
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-// Own includes
-#include "freebusy.h"
+#pragma once
 
-Freebusy::Freebusy(QObject *parent) :
-    QObject(parent)
-{
-}
+class Request;
+class QNetworkReply;
+class RequestDelegate {
+protected:
+    virtual void handleReply(Request *request,
+                             QNetworkReply *networkReply) = 0;
+    virtual void requestTimedOut(Request *request) = 0;
+};

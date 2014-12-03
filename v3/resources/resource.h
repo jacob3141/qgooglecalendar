@@ -21,49 +21,35 @@
 
 #pragma once
 
-// Own includes
-#include "v3/services/acl.h"
-#include "v3/services/calendarlist.h"
-#include "v3/services/calendars.h"
-#include "v3/services/channels.h"
-#include "v3/services/colors.h"
-#include "v3/services/events.h"
-#include "v3/services/freebusy.h"
-#include "v3/services/settings.h"
-
-#include <QObject>
+// Qt includes
+#include <QString>
+#include <QJsonObject>
 
 namespace APIV3 {
 
-class GoogleCalendarService : public QObject
+/**
+ * Common resource interface.
+ */
+class Resource
 {
-    Q_OBJECT
 public:
-    explicit GoogleCalendarService(QObject *parent = 0);
+    Resource() { }
+    virtual ~Resource() { }
 
-    Acl             *acl();
-    CalendarList    *calendarList();
-    Calendars       *calendars();
-    Channels        *channels();
-    Colors          *colors();
-    Events          *events();
-    Freebusy        *freebusy();
-    Settings        *settings();
+    /** @returns Type of the resource. */
+    virtual QString kind() const = 0;
 
-signals:
+    /** @returns ETag of the resource. */
+    virtual QString eTag() const = 0;
 
-public slots:
+    /** @returns Identifier of the resource. */
+    virtual QString id() const = 0;
 
-private:
-    Acl             *_acl;
-    CalendarList    *_calendarList;
-    Calendars       *_calendars;
-    Channels        *_channels;
-    Colors          *_colors;
-    Events          *_events;
-    Freebusy        *_freebusy;
-    Settings        *_settings;
+    /** @returns a json representation of this resource. */
+    virtual QJsonObject toJsonObject() const = 0;
+
+    /** Initializes this model from json. */
+    virtual void fromJson(QJsonObject jsonObject) = 0;
 };
 
 } // APIV3
-

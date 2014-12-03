@@ -19,61 +19,70 @@
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-#pragma once
-
 // Own includes
-#include "resource.h"
+#include "aclrule.h"
 
-/**
- * Calendars resource as specified by Google.
- * @see https://developers.google.com/google-apps/calendar/v3/reference/calendars
- */
-class Calendar : public Resource
+namespace APIV3 {
+
+AclRule::AclRule() :
+    Resource()
 {
-public:
-    explicit Calendar();
+}
 
-    /** @returns Type of the resource ("calendar#calendar"). */
-    QString kind() const;
+QString AclRule::kind() const
+{
+    return "calendar#aclRule";
+}
 
-    /** @returns ETag of the resource. */
-    QString eTag() const;
+QString AclRule::eTag() const
+{
+    return _eTag;
+}
 
-    /** @returns Identifier of the calendar. */
-    QString id() const;
+QString AclRule::id() const
+{
+    return _id;
+}
 
-    /** @returns a json representation of this calendar. */
-    QJsonObject toJsonObject() const;
+QJsonObject AclRule::toJsonObject() const
+{
+    // TODO
+    return QJsonObject();
+}
 
-    /** Initializes this model from json. */
-    void fromJson(QJsonObject jsonObject);
+void AclRule::fromJson(QJsonObject jsonObject)
+{
+    // TODO
+}
 
-    /** @returns Title of the calendar. */
-    QString summary() const;
+AclRule::ScopeType AclRule::scopeType() const
+{
+    return _scopeType;
+}
 
-    /** @returns Description of the calendar. Optional. */
-    QString description() const;
+QString AclRule::scopeValue() const
+{
+    return _scopeValue;
+}
 
-    /**
-     * @returns Geographic location of the calendar as free-form text.
-     * Optional.
-     */
-    QString location() const;
+AclRule::Role AclRule::role() const
+{
+    return _role;
+}
 
-    /** @returns The time zone of the calendar. Optional. */
-    QString timeZone() const;
+void AclRule::setScopeType(AclRule::ScopeType scopeType)
+{
+    _scopeType = scopeType;
+}
 
-    void setSummary(QString summary);
-    void setDescription(QString description);
-    void setLocation(QString location);
-    void setTimeZone(QString timeZone);
+void AclRule::setScopeValue(QString scopeValue)
+{
+    _scopeValue = scopeValue;
+}
 
-private:
-    QString _eTag;
-    QString _id;
-    QString _summary;
-    QString _description;
-    QString _location;
-    QString _timeZone;
-};
+void AclRule::setRole(AclRule::Role role)
+{
+    _role = role;
+}
 
+} // APIV3

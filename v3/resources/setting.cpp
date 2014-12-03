@@ -19,51 +19,50 @@
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-#pragma once
-
 // Own includes
-#include "v3/services/acl.h"
-#include "v3/services/calendarlist.h"
-#include "v3/services/calendars.h"
-#include "v3/services/channels.h"
-#include "v3/services/colors.h"
-#include "v3/services/events.h"
-#include "v3/services/freebusy.h"
-#include "v3/services/settings.h"
-
-#include <QObject>
+#include "setting.h"
 
 namespace APIV3 {
 
-class GoogleCalendarService : public QObject
+Setting::Setting() :
+    Resource()
 {
-    Q_OBJECT
-public:
-    explicit GoogleCalendarService(QObject *parent = 0);
+}
 
-    Acl             *acl();
-    CalendarList    *calendarList();
-    Calendars       *calendars();
-    Channels        *channels();
-    Colors          *colors();
-    Events          *events();
-    Freebusy        *freebusy();
-    Settings        *settings();
+QString Setting::kind() const
+{
+    return "calendar#setting";
+}
 
-signals:
+QString Setting::eTag() const
+{
+    return _eTag;
+}
 
-public slots:
+QString Setting::id() const
+{
+    return _id;
+}
 
-private:
-    Acl             *_acl;
-    CalendarList    *_calendarList;
-    Calendars       *_calendars;
-    Channels        *_channels;
-    Colors          *_colors;
-    Events          *_events;
-    Freebusy        *_freebusy;
-    Settings        *_settings;
-};
+QJsonObject Setting::toJsonObject() const
+{
+    // TODO
+    return QJsonObject();
+}
+
+void Setting::fromJson(QJsonObject jsonObject)
+{
+    // TODO
+}
+
+QString Setting::value() const
+{
+    return _value;
+}
+
+void Setting::setValue(QString value)
+{
+    _value = value;
+}
 
 } // APIV3
-
