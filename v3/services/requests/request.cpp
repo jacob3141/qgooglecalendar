@@ -45,6 +45,11 @@ Request::~Request()
     delete _requestMutex;
 }
 
+void Request::configureAccessToken(QString accessToken)
+{
+    _accessToken = accessToken;
+}
+
 bool Request::performSync(int timeout)
 {
     bool success = startRequest(timeout);
@@ -57,9 +62,19 @@ bool Request::performAsync(int timeout)
     return startRequest(timeout);
 }
 
+QByteArray Request::bodyData()
+{
+    return "";
+}
+
 Request::HttpMethod Request::httpMethod()
 {
     return HttpMethodGet;
+}
+
+QString Request::userAgent()
+{
+    return "QGoogleCalender/1.0";
 }
 
 void Request::receivedNetworkReply(QNetworkReply *networkReply)
@@ -74,28 +89,29 @@ void Request::receivedNetworkReply(QNetworkReply *networkReply)
 
 bool Request::startRequest(int timeout)
 {
-    // Try locking to ensure that there is no other transaction running.
+    // Try locking to ensure that there is no other request pending.
     if(!_requestMutex->tryLock(timeout * 1000)) {
         if(_requestDelegate) {
             _requestDelegate->transactionTimedOut(this);
         }
-        // Do not perform transaction when another transaction is running.
+        // Do not perform request when another request is pending.
         return false;
     }
 
-    // Build the network request.
-    QNetworkRequest *networkRequest = buildNetworkRequest();
-    if(networkRequest) {
-        switch (httpMethod()) {
-        case HttpMethodGet:
-            _networkAccessManager.get(networkRequest);
-            break;
-        case HttpMethodPost:
-            _networkAccessManager.post(networkRequest);
-            break;
-        }
-    } else {
-        qDebug() << "Warning: Request created null network request.";
+    // Perform request
+    switch (httpMethod()) {
+    case HttpMethodGet:
+        _networkAccessManager.get(networkRequest());
+        break;
+    case HttpMethodPost:
+        _networkAccessManager.post(networkRequest(), bodyData());
+        break;
+    case HttpMethodDelete:
+        _networkAccessManager.deleteResource(networkRequest());
+        break;
+    case HttpMethodPut:
+        _networkAccessManager.put(networkRequest(), bodyData());
+        break;
     }
     return true;
 }

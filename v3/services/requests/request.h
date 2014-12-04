@@ -26,9 +26,9 @@
 
 // Qt includes
 #include <QNetworkAccessManager>
+#include <QNetworkRequest>
 #include <QMutex>
 #include <QObject>
-#include <QThread>
 
 namespace APIV3 {
 
@@ -42,11 +42,14 @@ public:
     enum HttpMethod {
         HttpMethodGet,
         HttpMethodPost,
-        HttpMethodDelete
+        HttpMethodDelete,
+        HttpMethodPut
     };
 
     Request(RequestDelegate *requestDelegate, QObject *parent = 0);
     virtual ~Request();
+
+    void configureAccessToken(QString accessToken);
 
     /**
      * Performs a transaction synchronously, ie. the executing thread will be
@@ -67,13 +70,26 @@ public:
      * Supposed to supply the transaction with a network request.
      * @returns the network request.
      */
-    virtual QNetworkRequest *buildNetworkRequest() = 0;
+    virtual QNetworkRequest networkRequest() = 0;
+
+    virtual QByteArray bodyData();
 
     /**
      * Supposed to return the appropriate http method.
      * @returns the http method.
      */
-    virtual HttpMethod httpMethod();
+    virtual HttpMethod httpMethod() = 0;
+
+    /**
+     * Supposed to return a list of required authorization scopes for this
+     * request.
+     * @returns a list of scopes.
+     */
+    virtual QStringList requiredScopes() = 0;
+
+
+    /** @returns the user agent to be used with this request. */
+    virtual QString userAgent();
 
 private slots:
     /**
@@ -81,6 +97,9 @@ private slots:
      * @param networkReply
      */
     void receivedNetworkReply(QNetworkReply *networkReply);
+
+protected:
+    QString _accessToken;
 
 private:
     /**

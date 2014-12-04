@@ -22,6 +22,22 @@
 // Own includes
 #include "color.h"
 
+//{
+//  "kind": "calendar#colors",
+//  "updated": datetime,
+//  "calendar": {
+//    (key): {
+//      "background": string,
+//      "foreground": string
+//    }
+//  },
+//  "event": {
+//    (key): {
+//      "background": string,
+//      "foreground": string
+//    }
+//  }
+//}
 namespace APIV3 {
 
 Color::Color()

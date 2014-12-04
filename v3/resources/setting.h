@@ -38,17 +38,11 @@ public:
     /** @returns Type of the resource ("calendar#setting"). */
     QString kind() const;
 
-    /** @returns ETag of the resource. */
-    QString eTag() const;
-
-    /** @returns The id of the user setting. */
-    QString id() const;
-
     /** @returns a json representation of this setting. */
     QJsonObject toJsonObject() const;
 
     /** Initializes this model from json. */
-    void fromJson(QJsonObject jsonObject);
+    bool fromJson(QJsonObject jsonObject);
 
     /**
      * @returns Value of the user setting.
@@ -60,8 +54,6 @@ public:
     void setValue(QString value);
 
 private:
-    QString _eTag;
-    QString _id;
     QString _value;
 };
 

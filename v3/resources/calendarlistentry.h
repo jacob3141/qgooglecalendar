@@ -101,17 +101,11 @@ public:
     /** @returns Type of the resource ("calendar#calendarListEntry"). */
     QString kind();
 
-    /** @returns ETag of the resource. */
-    QString eTag() const;
-
-    /** @returns Identifier of the calendar. */
-    QString id() const;
-
     /** @returns a json representation of this calendar list entry. */
     QJsonObject toJsonObject() const;
 
     /** Initializes this model from json. */
-    void fromJson(QJsonObject jsonObject);
+    bool fromJson(QJsonObject jsonObject);
 
     /** @returns The effective access role that the authenticated user has on
      * the calendar. Read-only. Possible values are:
@@ -227,8 +221,6 @@ public:
     void setNotifications(QList<Notification> notifications);
 
 private:
-    QString                 _eTag;
-    QString                 _id;
     QString                 _summary;
     QString                 _description;
     QString                 _location;

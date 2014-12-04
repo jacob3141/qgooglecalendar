@@ -38,17 +38,11 @@ public:
     /** @returns Type of the resource ("calendar#calendar"). */
     QString kind() const;
 
-    /** @returns ETag of the resource. */
-    QString eTag() const;
-
-    /** @returns Identifier of the calendar. */
-    QString id() const;
-
     /** @returns a json representation of this calendar. */
     QJsonObject toJsonObject() const;
 
     /** Initializes this model from json. */
-    void fromJson(QJsonObject jsonObject);
+    bool fromJson(QJsonObject jsonObject);
 
     /** @returns Title of the calendar. */
     QString summary() const;
@@ -77,8 +71,6 @@ public:
     void setTimeZone(QString timeZone);
 
 private:
-    QString _eTag;
-    QString _id;
     QString _summary;
     QString _description;
     QString _location;

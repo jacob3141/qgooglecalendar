@@ -46,13 +46,24 @@ QString Setting::id() const
 
 QJsonObject Setting::toJsonObject() const
 {
-    // TODO
-    return QJsonObject();
+    QJsonObject setting;
+    setting.insert("kind", kind());
+    setting.insert("etag", eTag());
+    setting.insert("id", id());
+    setting.insert("value", value());
+    return setting;
 }
 
-void Setting::fromJson(QJsonObject jsonObject)
+bool Setting::fromJson(QJsonObject jsonObject)
 {
-    // TODO
+    if(jsonObject.value("kind").toString() != kind()) {
+        return false;
+    }
+
+    _eTag = jsonObject.value("etag").toString();
+    _id = jsonObject.value("id").toString();
+    _value = jsonObject.value("value").toString();
+    return true;
 }
 
 QString Setting::value() const

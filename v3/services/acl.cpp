@@ -44,18 +44,21 @@ Acl::Acl(QObject *parent) :
 
 bool Acl::removeSync(Calendar calendar, int ruleId)
 {
+    _removeRequest->configureAccessToken(_accessToken);
     _removeRequest->configure(calendar, ruleId);
     _removeRequest->performSync(_operationTimeout);
 }
 
 AclRule Acl::getSync(Calendar calendar, int ruleId)
 {
+    _getRequest->configureAccessToken(_accessToken);
     _getRequest->configure(calendar, ruleId);
     _getRequest->performSync(_operationTimeout);
 }
 
 int Acl::insertSync(Calendar calendar, AclRule rule)
 {
+    _insertRequest->configureAccessToken(_accessToken);
     _insertRequest->configure(calendar, rule);
     _insertRequest->performSync(_operationTimeout);
 }
@@ -64,18 +67,23 @@ int Acl::insertSync(Calendar calendar, AclRule rule)
 
 void Acl::removeAsync(Calendar calendar, int ruleId)
 {
+    _removeRequest->configureAccessToken(_accessToken);
     _removeRequest->configure(calendar, ruleId);
     _removeRequest->performAsync(_operationTimeout);
 }
 
 void Acl::getAsync(Calendar calendar, int ruleId)
 {
+    _getRequest->configureAccessToken(_accessToken);
     _getRequest->configure(calendar, ruleId);
     _getRequest->performAsync(_operationTimeout);
 }
 
 void Acl::insertAsync(Calendar calendar, AclRule rule)
 {
+    _insertRequest->configureAccessToken(_accessToken);
+    _insertRequest->configure(calendar, rule);
+    _insertRequest->performASync(_operationTimeout);
 }
 
 // APIRequestDelegate

@@ -46,13 +46,30 @@ QString Calendar::id() const
 
 QJsonObject Calendar::toJsonObject() const
 {
-    // TODO
-    return QJsonObject();
+    QJsonObject calendar;
+    calendar.insert("kind", kind());
+    calendar.insert("etag", eTag());
+    calendar.insert("id", id());
+    calendar.insert("summary", summary());
+    calendar.insert("description", description());
+    calendar.insert("location", location());
+    calendar.insert("timeZone", timeZone());
+    return calendar;
 }
 
-void Calendar::fromJson(QJsonObject jsonObject)
+bool Calendar::fromJson(QJsonObject jsonObject)
 {
-    // TODO
+    if(jsonObject.value("kind").toString() != kind()) {
+        return false;
+    }
+
+    _eTag = jsonObject.value("etag").toString();
+    _id = jsonObject.value("id").toString();
+    _summary = jsonObject.value("summary").toString();
+    _description = jsonObject.value("description").toString();
+    _location = jsonObject.value("location").toString();
+    _timeZone = jsonObject.value("timeZone").toString();
+    return true;
 }
 
 QString Calendar::summary() const

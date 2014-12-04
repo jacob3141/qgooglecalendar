@@ -46,13 +46,35 @@ QString AclRule::id() const
 
 QJsonObject AclRule::toJsonObject() const
 {
-    // TODO
-    return QJsonObject();
+    QJsonObject rule;
+    rule.insert("kind", kind());
+    rule.insert("etag", eTag());
+    rule.insert("id", id());
+
+    QJsonObject scope;
+    scope.insert("type", scopeType());
+    scope.insert("value", scopeValue());
+    rule.insert("scope", scope);
+
+    rule.insert("role", role());
+    return rule;
 }
 
-void AclRule::fromJson(QJsonObject jsonObject)
+bool AclRule::fromJson(QJsonObject jsonObject)
 {
-    // TODO
+    if(jsonObject.value("kind").toString() != kind()) {
+        return false;
+    }
+
+    _eTag = jsonObject.value("etag").toString();
+    _id = jsonObject.value("id").toString();
+
+    QJsonObject scope = jsonObject.value("scope").toObject();
+    _scopeType = scope.value("type").toString();
+    _scopeValue = scope.value("value").toString();
+
+    _role = jsonObject.value("role").toString();
+    return true;
 }
 
 AclRule::ScopeType AclRule::scopeType() const

@@ -22,6 +22,9 @@
 // Own includes
 #include "calendarlistentry.h"
 
+// Qt includes
+#include <QJsonArray>
+
 namespace APIV3 {
 
 CalendarListEntry::CalendarListEntry() :
@@ -81,13 +84,78 @@ QString CalendarListEntry::id() const
 
 QJsonObject CalendarListEntry::toJsonObject() const
 {
-    // TODO
-    return QJsonObject();
+    QJsonObject calendarListEntry;
+    calendarListEntry.insert("kind", kind());
+    calendarListEntry.insert("etag", eTag());
+    calendarListEntry.insert("id", id());
+    calendarListEntry.insert("summary", summary());
+    calendarListEntry.insert("description", description());
+    calendarListEntry.insert("location", location());
+    calendarListEntry.insert("timeZone", timeZone());
+    calendarListEntry.insert("summaryOverride", summaryOverride());
+    calendarListEntry.insert("colorId", colorId());
+    calendarListEntry.insert("backgroundColor", backgroundColor());
+    calendarListEntry.insert("foregroundColor", foregroundColor());
+    calendarListEntry.insert("hidden", hidden());
+    calendarListEntry.insert("selected", selected());
+    calendarListEntry.insert("accessRole", accessRole());
+
+    QJsonArray defaultReminders;
+    foreach(DefaultReminder defaultReminder, _defaultReminders) {
+        QJsonObject defaultReminderObject;
+        defaultReminderObject.value("method", defaultReminder.method);
+        defaultReminderObject.value("minutes"),
+        defaultReminders.append(defaultReminderObject);
+    }
+    calendarListEntry.insert("defaultReminders", defaultReminders);
+
+//      "defaultReminders": [
+//        {
+//          "method": string,
+//          "minutes": integer
+//        }
+//      ],
+//      "notificationSettings": {
+//        "notifications": [
+//          {
+//            "type": string,
+//            "method": string
+//          }
+//        ]
+//      },
+
+
+    calendarListEntry.insert("primary", primary());
+    calendarListEntry.insert("deleted", deleted());
+    return calendarListEntry;
 }
 
-void CalendarListEntry::fromJson(QJsonObject jsonObject)
+bool CalendarListEntry::fromJson(QJsonObject jsonObject)
 {
-    // TODO
+    if(jsonObject.value("kind").toString() != kind()) {
+        return false;
+    }
+
+    //    {
+    //      "kind": "calendar#calendarListEntry",
+    //      "etag": etag,
+    //      "id": string,
+    //      "summary": string,
+    //      "description": string,
+    //      "location": string,
+    //      "timeZone": string,
+    //      "summaryOverride": string,
+    //      "colorId": string,
+    //      "backgroundColor": string,
+    //      "foregroundColor": string,
+    //      "hidden": boolean,
+    //      "selected": boolean,
+    //      "accessRole": string,
+
+    //      "primary": boolean,
+    //      "deleted": boolean
+    //    }
+    return true;
 }
 
 QString CalendarListEntry::summaryOverride() const

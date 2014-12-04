@@ -30,4 +30,92 @@ CalendarList::CalendarList(QObject *parent) :
 {
 }
 
+// Synchronous methods, blocking
+bool CalendarList::removeSync(Calendar calendar, int ruleId)
+{
+
+}
+
+AclRule CalendarList::getSync(Calendar calendar, int ruleId)
+{
+
+}
+
+int CalendarList::insertSync(Calendar calendar, AclRule rule)
+{
+
+}
+
+// list
+// patch
+// update
+// watch
+
+// Asynchronous methods, non-blocking
+void CalendarList::removeAsync(Calendar calendar, int ruleId)
+{
+
+}
+
+void CalendarList::getAsync(Calendar calendar, int ruleId)
+{
+
+}
+
+void CalendarList::insertAsync(Calendar calendar, AclRule rule)
+{
+
+}
+
+// list
+// patch
+// update
+// watch
+
+
+void CalendarList::handleReply(Request *request, QNetworkReply *networkReply)
+{
+
+}
+
+void CalendarList::requestTimedOut(Request *request)
+{
+
+}
+
+void CalendarList::handleRemoveReply(QNetworkReply* networkReply)
+{
+
+}
+
+void CalendarList::handleGetReply(QNetworkReply* networkReply)
+{
+
+}
+
+void CalendarList::handleInsertReply(QNetworkReply* networkReply)
+{
+
+}
+
+void CalendarList::handleListReply(QNetworkReply* networkReply)
+{
+
+}
+
+void CalendarList::handlePatchReply(QNetworkReply* networkReply)
+{
+
+}
+
+void CalendarList::handleUpdateReply(QNetworkReply* networkReply)
+{
+
+}
+
+void CalendarList::handleWatchReply(QNetworkReply* networkReply)
+{
+
+}
+
 } // APIV3

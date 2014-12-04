@@ -40,7 +40,7 @@ public:
         _rule = rule;
     }
 
-    QNetworkRequest *buildNetworkRequest() {
+    QNetworkRequest networkRequest() {
 
     }
 

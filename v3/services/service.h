@@ -41,6 +41,7 @@ public slots:
 
 protected:
     int _operationTimeout;
+    QString _accessToken;
 };
 
 } // APIV3

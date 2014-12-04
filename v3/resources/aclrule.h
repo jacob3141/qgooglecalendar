@@ -56,17 +56,11 @@ public:
     /** @returns Type of the resource ("calendar#aclRule"). */
     QString kind() const;
 
-    /** @returns ETag of the resource. */
-    QString eTag() const;
-
-    /** @returns Identifier of the ACL rule. */
-    QString id() const;
-
     /** @returns a json representation of this access control rule. */
     QJsonObject toJsonObject() const;
 
     /** Initializes this model from json. */
-    void fromJson(QJsonObject jsonObject);
+    bool fromJson(QJsonObject jsonObject);
 
     /**
      * The type of the scope. Possible values are:
@@ -110,8 +104,6 @@ public:
     void setRole(Role role);
 
 private:
-    QString     _eTag;
-    QString     _id;
     ScopeType   _scopeType;
     QString     _scopeValue;
     Role        _role;

@@ -39,7 +39,7 @@ public:
         _ruleId = ruleId;
     }
 
-    QNetworkRequest *buildNetworkRequest() {
+    QNetworkRequest networkRequest() {
 
     }
 

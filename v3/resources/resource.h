@@ -40,16 +40,24 @@ public:
     virtual QString kind() const = 0;
 
     /** @returns ETag of the resource. */
-    virtual QString eTag() const = 0;
+    virtual QString eTag() const {
+        return _eTag;
+    }
 
     /** @returns Identifier of the resource. */
-    virtual QString id() const = 0;
+    virtual QString id() const {
+        return _id;
+    }
 
     /** @returns a json representation of this resource. */
     virtual QJsonObject toJsonObject() const = 0;
 
     /** Initializes this model from json. */
-    virtual void fromJson(QJsonObject jsonObject) = 0;
+    virtual bool fromJson(QJsonObject jsonObject) = 0;
+
+protected:
+    QString     _eTag;
+    QString     _id;
 };
 
 } // APIV3
