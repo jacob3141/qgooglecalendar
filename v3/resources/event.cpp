@@ -59,8 +59,8 @@ QJsonObject Event::toJsonObject() const
     }
 
     eventObject.insert("htmlLink", htmlLink());
-    eventObject.insert("created", created().toString());
-    eventObject.insert("updated", updated().toString());
+    eventObject.insert("created", created().toString(Qt::ISODate));
+    eventObject.insert("updated", updated().toString(Qt::ISODate));
     eventObject.insert("summary", summary());
     eventObject.insert("description", description());
     eventObject.insert("location", location());
@@ -81,14 +81,14 @@ QJsonObject Event::toJsonObject() const
     eventObject.insert("organizer", organizerObject);
 
     QJsonObject startObject;
-    startObject.insert("date", start().date.toString());
-    startObject.insert("dateTime", start().dateTime.toString());
+    startObject.insert("date", start().date.toString(Qt::ISODate));
+    startObject.insert("dateTime", start().dateTime.toString(Qt::ISODate));
     startObject.insert("timeZone", start().timeZone.toString());
     eventObject.insert("start", startObject);
 
     QJsonObject endObject;
-    endObject.insert("date", end().date.toString());
-    endObject.insert("dateTime", end().dateTime.toString());
+    endObject.insert("date", end().date.toString(Qt::ISODate));
+    endObject.insert("dateTime", end().dateTime.toString(Qt::ISODate));
     endObject.insert("timeZone", end().timeZone.toString());
     eventObject.insert("end", endObject);
 
@@ -103,8 +103,8 @@ QJsonObject Event::toJsonObject() const
     eventObject.insert("recurringEventId", recurringEventId());
 
     QJsonObject originalStartTimeObject;
-    originalStartTimeObject.insert("date", originalStartTime().date.toString());
-    originalStartTimeObject.insert("dateTime", originalStartTime().dateTime.toString());
+    originalStartTimeObject.insert("date", originalStartTime().date.toString(Qt::ISODate));
+    originalStartTimeObject.insert("dateTime", originalStartTime().dateTime.toString(Qt::ISODate));
     originalStartTimeObject.insert("timeZone", originalStartTime().timeZone.toString());
     eventObject.insert("originalStartTime", originalStartTimeObject);
 
