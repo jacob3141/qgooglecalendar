@@ -253,110 +253,222 @@ bool Event::fromJson(QJsonObject jsonObject)
         return false;
     }
 
-    //{
-    //  "kind": "calendar#event",
-    //  "etag": etag,
-    //  "id": string,
-    //  "status": string,
-    //  "htmlLink": string,
-    //  "created": datetime,
-    //  "updated": datetime,
-    //  "summary": string,
-    //  "description": string,
-    //  "location": string,
-    //  "colorId": string,
-    //  "creator": {
-    //    "id": string,
-    //    "email": string,
-    //    "displayName": string,
-    //    "self": boolean
-    //  },
-    //  "organizer": {
-    //    "id": string,
-    //    "email": string,
-    //    "displayName": string,
-    //    "self": boolean
-    //  },
-    //  "start": {
-    //    "date": date,
-    //    "dateTime": datetime,
-    //    "timeZone": string
-    //  },
-    //  "end": {
-    //    "date": date,
-    //    "dateTime": datetime,
-    //    "timeZone": string
-    //  },
-    //  "endTimeUnspecified": boolean,
-    //  "recurrence": [
-    //    string
-    //  ],
-    //  "recurringEventId": string,
-    //  "originalStartTime": {
-    //    "date": date,
-    //    "dateTime": datetime,
-    //    "timeZone": string
-    //  },
-    //  "transparency": string,
-    //  "visibility": string,
-    //  "iCalUID": string,
-    //  "sequence": integer,
-    //  "attendees": [
-    //    {
-    //      "id": string,
-    //      "email": string,
-    //      "displayName": string,
-    //      "organizer": boolean,
-    //      "self": boolean,
-    //      "resource": boolean,
-    //      "optional": boolean,
-    //      "responseStatus": string,
-    //      "comment": string,
-    //      "additionalGuests": integer
-    //    }
-    //  ],
-    //  "attendeesOmitted": boolean,
-    //  "extendedProperties": {
-    //    "private": {
-    //      (key): string
-    //    },
-    //    "shared": {
-    //      (key): string
-    //    }
-    //  },
-    //  "hangoutLink": string,
-    //  "gadget": {
-    //    "type": string,
-    //    "title": string,
-    //    "link": string,
-    //    "iconLink": string,
-    //    "width": integer,
-    //    "height": integer,
-    //    "display": string,
-    //    "preferences": {
-    //      (key): string
-    //    }
-    //  },
-    //  "anyoneCanAddSelf": boolean,
-    //  "guestsCanInviteOthers": boolean,
-    //  "guestsCanModify": boolean,
-    //  "guestsCanSeeOtherGuests": boolean,
-    //  "privateCopy": boolean,
-    //  "locked": boolean,
-    //  "reminders": {
-    //    "useDefault": boolean,
-    //    "overrides": [
-    //      {
-    //        "method": string,
-    //        "minutes": integer
-    //      }
-    //    ]
-    //  },
-    //  "source": {
-    //    "url": string,
-    //    "title": string
-    //  }
-    //}
+    _eTag = jsonObject.value("etag").toString();
+    _id = jsonObject.value("id").toString();
+
+    QString status = jsonObject.value("status").toString();
+    if(status == "confirmed") {
+        _status = EventStatusConfirmed;
+    } else
+    if(status == "tentative") {
+        _status = EventStatusTentative;
+    } else
+    if(status == "cancelled") {
+        _status = EventStatusCancelled;
+    } else {
+        _status = EventStatusNil;
+    }
+
+    _htmlLink = jsonObject.value("htmlLink").toString();
+    _created = QDateTime::fromString(jsonObject.value("created").toString(), Qt::ISODate);
+    _updated = QDateTime::fromString(jsonObject.value("updated").toString(), Qt::ISODate);
+    _summary = jsonObject.value("summary").toString();
+    _description = jsonObject.value("description").toString();
+    _location = jsonObject.value("location").toString();
+    _colorId = jsonObject.value("colorId").toString();
+
+    QJsonObject creatorObject = jsonObject.value("creator").toObject();
+    _creator.id = creatorObject.value("id").toString();
+    _creator.email = creatorObject.value("email").toString();
+    _creator.displayName = creatorObject.value("displayName").toString();
+    _creator.self = creatorObject.value("self").toBool();
+
+    QJsonObject organizerObject = jsonObject.value("organizer").toObject();
+    _organizer.id = organizerObject.value("id").toString();
+    _organizer.email = organizerObject.value("email").toString();
+    _organizer.displayName = organizerObject.value("displayName").toString();
+    _organizer.self = organizerObject.value("self").toBool();
+
+    QJsonObject startObject = jsonObject.value("start").toObject();
+    _start.date = QDate::fromString(startObject.value("date").toString(), Qt::ISODate);
+    _start.dateTime = QDateTime::fromString(startObject.value("dateTime").toString(), Qt::ISODate);
+    _start.timeZone = startObject.value("timeZone").toString();
+
+    QJsonObject endObject = jsonObject.value("end").toObject();
+    _end.date = QDate::fromString(endObject.value("date").toString(), Qt::ISODate);
+    _end.dateTime = QDateTime::fromString(endObject.value("dateTime").toString(), Qt::ISODate);
+    _end.timeZone = endObject.value("timeZone").toString();
+
+    _endTimeUnspecified = jsonObject.value("endTimeUnspecified").toString();
+
+    QJsonArray recurrenceArray = jsonObject.value("recurrence").toArray();
+    _recurrence.clear();
+    while(recurrenceArray.count()) {
+        _recurrence.append(recurrenceArray.at(0).toString());
+        _recurrence.removeFirst();
+    }
+
+    _recurringEventId = jsonObject.value("recurringEventId").toString();
+
+    QJsonObject originalStartTimeObject = jsonObject
+            .value("originalStartTime").toObject();
+    _originalStartTime.date = QDate::fromString(
+                originalStartTimeObject.value("date").toString(),
+                Qt::ISODate);
+    _originalStartTime.dateTime = QDateTime::fromString(
+                originalStartTimeObject.value("dateTime").toString(),
+                Qt::ISODate);
+    _originalStartTime.timeZone = originalStartTimeObject
+            .value("timeZone").toString();
+
+    QString transparency = jsonObject.value("transparency").toString();
+    if(transparency == "opaque") {
+        _transparency = TransparencyOpaque;
+    } else
+    if(transparency == "transparent") {
+        _transparency = TransparencyTransparent;
+    } else {
+        _transparency = TransparencyNil;
+    }
+
+    QString visibility = jsonObject.value("visibility").toString();
+    if(visibility == "default") {
+        _visibility = VisibilityDefault;
+    } else
+    if(visibility == "public") {
+        _visibility = VisibilityPublic;
+    } else
+    if(visibility == "private") {
+        _visibility = VisibilityPrivate;
+    } else
+    if(visibility == "confidential") {
+        _visibility = VisibilityConfidential;
+    } else {
+        _visibility = VisibilityNil;
+    }
+
+    _iCalUID = jsonObject.value("iCalUID").toString();
+    _sequence = jsonObject.value("sequence").toInt();
+
+    QJsonArray attendeesArray = jsonObject.value("attendees").toArray();
+    _attendees.clear();
+    while(attendeesArray.count()) {
+        QJsonObject attendeeObject = attendeesArray.at(0);
+        attendeesArray.removeFirst();
+
+        Attendee attendee;
+        attendee.id = attendeeObject.value("id").toString();
+        attendee.email = attendeeObject.value("email").toString();
+        attendee.displayName = attendeeObject.value("displayName").toString();
+        attendee.organizer = attendeeObject.value("organizer").toBool();
+        attendee.self = attendeeObject.value("self").toBool();
+        attendee.resource = attendeeObject.value("resource").toBool();
+        attendee.optional = attendeeObject.value("optional").toBool();
+
+        QString responseStatus = attendeeObject.value("responseStatus").toString();
+        if(responseStatus == "needsAction") {
+            attendee.responseStatus = ResponseStatusNeedsAction;
+        } else
+        if(responseStatus == "declined") {
+            attendee.responseStatus = ResponseStatusDeclined;
+        } else
+        if(responseStatus == "tentative") {
+            attendee.responseStatus = ResponseStatusTentative;
+        } else
+        if(responseStatus == "accepted") {
+            attendee.responseStatus = ResponseStatusAccepted;
+        } else {
+            attendee.responseStatus = ResponseStatusNil;
+        }
+
+        attendee.comment = attendeeObject.value("comment").toString();
+        attendee.additionalGuests = attendeeObject.value("additionalGuests").toInt();
+        _attendees.append(attendee);
+    }
+
+    _attendeesOmitted = jsonObject.value("attendeesOmitted").toString();
+
+    QJsonObject extendedPropertiesObject = jsonObject
+            .value("extendedProperties").toObject();
+
+    QJsonObject privateObject = extendedPropertiesObject.value("private").toObject();
+    _extendedProperties.privateProperties.clear();
+    QStringList privateKeys = privateObject.keys();
+    foreach(QString key, privateKeys) {
+        _extendedProperties.privateProperties.insert(key, privateObject.value(key).toString());
+    }
+
+    QJsonObject sharedObject = extendedPropertiesObject.value("shared").toObject();
+    _extendedProperties.sharedProperties.clear();
+    QStringList sharedKeys = sharedObject.keys();
+    foreach(QString key, sharedKeys) {
+        _extendedProperties.sharedProperties.insert(key, sharedObject.value(key).toString());
+    }
+
+    _hangoutLink = jsonObject.value("hangoutLink").toString();
+
+    QJsonObject gadgetObject = jsonObject.value("gadget").toObject();
+
+    _gadget.type = gadgetObject.value("type").toString();
+    _gadget.title = gadgetObject.value("title").toString();
+    _gadget.link = gadgetObject.value("link").toString();
+    _gadget.iconLink = gadgetObject.value("iconLink").toString();
+    _gadget.width = gadgetObject.value("width").toInt();
+    _gadget.height = gadgetObject.value("height").toInt();
+
+    QString display = gadgetObject.value("display").toString();
+    if(display == "icon") {
+        _gadget.display = GadgetDisplayModeIcon;
+    } else
+    if(display == "chip") {
+        _gadget.display = GadgetDisplayModeChip;
+    } else {
+        _gadget.display = GadgetDisplayModeNil;
+    }
+
+    QJsonObject preferencesObject = gadgetObject.value("preferences").toObject();
+    QStringList preferencesKeys = preferencesObject.keys();
+    _gadget.preferences.clear();
+    foreach (QString key, preferencesKeys) {
+        _gadget.preferences.insert(key, preferencesObject.value(key).toString());
+    }
+
+    _anyoneCanAddSelf = jsonObject.value("anyoneCanAddSelf").toBool();
+    _guestsCanInviteOthers = jsonObject.value("guestsCanInviteOthers").toBool();
+    _guestsCanModify = jsonObject.value("guestsCanModify").toBool();
+    _guestsCanSeeOtherGuests = jsonObject.value("guestsCanSeeOtherGuests").toBool();
+    _privateCopy = jsonObject.value("privateCopy").toBool();
+    _locked = jsonObject.value("locked").toBool();
+
+    QJsonObject remindersObject = jsonObject.value("reminders").toObject();
+    _reminders.useDefault = remindersObject.value("useDefault").toBool();
+    QJsonArray overridesArray = remindersObject.value("overrides").toArray();
+    _reminders.overrides.clear();
+    while(overridesArray.count()) {
+        QJsonObject overrideObject = overridesArray.at(0);
+        overridesArray.removeFirst();
+
+        Reminders::Override override;
+        QString method = overrideObject.value("method").toString();
+        if(method == "email") {
+            override.method = Reminders::MethodEmail;
+        } else
+        if(method == "sms") {
+            override.method = Reminders::MethodSms;
+        } else
+        if(method == "popup") {
+            override.method = Reminders::MethodPopup;
+        } else {
+            override.method = Reminders::MethodNil;
+        }
+
+        override.minutes = overrideObject.value("minutes").toInt();
+    }
+
+    QJsonObject sourceObject = jsonObject.value("source").toObject();
+    _source.url = sourceObject.value("url").toString();
+    _source.title = sourceObject.value("title").toString();
+
     return true;
 }
 
