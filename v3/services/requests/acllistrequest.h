@@ -47,6 +47,12 @@ public:
         return HttpMethodGet;
     }
 
+    QStringList requiredScopes() {
+        QStringList scopes;
+        scopes << "https://www.googleapis.com/auth/calendar";
+        return scopes;
+    }
+
 private:
     Calendar _calendar;
     int _ruleId;

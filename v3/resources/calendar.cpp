@@ -34,16 +34,6 @@ QString Calendar::kind() const
     return "calendar#calendar";
 }
 
-QString Calendar::eTag() const
-{
-    return _eTag;
-}
-
-QString Calendar::id() const
-{
-    return _id;
-}
-
 QJsonObject Calendar::toJsonObject() const
 {
     QJsonObject calendar;

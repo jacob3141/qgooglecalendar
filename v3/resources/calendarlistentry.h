@@ -24,6 +24,9 @@
 // Own includes
 #include "resource.h"
 
+// Qt includes
+#include <QList>
+
 namespace APIV3 {
 
 /**
@@ -99,7 +102,7 @@ public:
     };
 
     /** @returns Type of the resource ("calendar#calendarListEntry"). */
-    QString kind();
+    QString kind() const;
 
     /** @returns a json representation of this calendar list entry. */
     QJsonObject toJsonObject() const;

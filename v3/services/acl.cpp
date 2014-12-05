@@ -29,7 +29,7 @@ namespace APIV3 {
 
 Acl::Acl(QObject *parent) :
     Service(parent),
-    APIRequestDelegate()
+    RequestDelegate()
 {
     _removeRequest  = new AclRemoveRequest(this, parent);
     _getRequest     = new AclGetRequest(this, parent);
@@ -42,48 +42,48 @@ Acl::Acl(QObject *parent) :
 
 // Sync
 
-bool Acl::removeSync(Calendar calendar, int ruleId)
+bool Acl::removeSync(QString calendarId, QString ruleId)
 {
     _removeRequest->configureAccessToken(_accessToken);
-    _removeRequest->configure(calendar, ruleId);
+    _removeRequest->configure(calendarId, ruleId);
     _removeRequest->performSync(_operationTimeout);
 }
 
-AclRule Acl::getSync(Calendar calendar, int ruleId)
+AclRule Acl::getSync(QString calendarId, QString ruleId)
 {
     _getRequest->configureAccessToken(_accessToken);
-    _getRequest->configure(calendar, ruleId);
+    _getRequest->configure(calendarId, ruleId);
     _getRequest->performSync(_operationTimeout);
 }
 
-int Acl::insertSync(Calendar calendar, AclRule rule)
+int Acl::insertSync(QString calendarId, AclRule rule)
 {
     _insertRequest->configureAccessToken(_accessToken);
-    _insertRequest->configure(calendar, rule);
+    _insertRequest->configure(calendarId, rule);
     _insertRequest->performSync(_operationTimeout);
 }
 
 // Async
 
-void Acl::removeAsync(Calendar calendar, int ruleId)
+void Acl::removeAsync(QString calendarId, QString ruleId)
 {
     _removeRequest->configureAccessToken(_accessToken);
-    _removeRequest->configure(calendar, ruleId);
+    _removeRequest->configure(calendarId, ruleId);
     _removeRequest->performAsync(_operationTimeout);
 }
 
-void Acl::getAsync(Calendar calendar, int ruleId)
+void Acl::getAsync(QString calendarId, QString ruleId)
 {
     _getRequest->configureAccessToken(_accessToken);
-    _getRequest->configure(calendar, ruleId);
+    _getRequest->configure(calendarId, ruleId);
     _getRequest->performAsync(_operationTimeout);
 }
 
-void Acl::insertAsync(Calendar calendar, AclRule rule)
+void Acl::insertAsync(QString calendarId, AclRule rule)
 {
     _insertRequest->configureAccessToken(_accessToken);
-    _insertRequest->configure(calendar, rule);
-    _insertRequest->performASync(_operationTimeout);
+    _insertRequest->configure(calendarId, rule);
+    _insertRequest->performAsync(_operationTimeout);
 }
 
 // APIRequestDelegate
@@ -126,18 +126,18 @@ void Acl::requestTimedOut(Request *request)
 
 void Acl::handleRemoveReply(QNetworkReply* networkReply)
 {
-    emit removeFinished();
+    //emit removeFinished();
 }
 
 void Acl::handleGetReply(QNetworkReply* networkReply)
 {
 
-    emit getFinished();
+    //emit getFinished();
 }
 
 void Acl::handleInsertReply(QNetworkReply* networkReply)
 {
-    emit insertFinished();
+    //emit insertFinished();
 }
 
 void Acl::handleListReply(QNetworkReply* networkReply)

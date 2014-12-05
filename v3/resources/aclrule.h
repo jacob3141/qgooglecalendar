@@ -24,6 +24,9 @@
 // Own includes
 #include "resource.h"
 
+// Qt includes
+#include <QObject>
+
 namespace APIV3 {
 
 /**
@@ -41,7 +44,8 @@ public:
         ScopeTypeDefault,
         ScopeTypeUser,
         ScopeTypeGroup,
-        ScopeTypeDomain
+        ScopeTypeDomain,
+        ScopeTypeNil
     };
 
     /** Role. */
@@ -50,7 +54,8 @@ public:
         RoleFreeBusyReader,
         RoleReader,
         RoleWriter,
-        RoleOwner
+        RoleOwner,
+        RoleNil
     };
 
     /** @returns Type of the resource ("calendar#aclRule"). */

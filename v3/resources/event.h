@@ -319,40 +319,40 @@ public:
      * "tentative" - The event is tentatively confirmed.
      * "cancelled" - The event is cancelled.
      */
-    EventStatus status();
+    EventStatus status() const;
 
     /**
      * An absolute link to this event in the Google Calendar Web UI.
      * Read-only.
      */
-    QString htmlLink();
+    QString htmlLink() const;
 
     /** Creation time of the event (as a RFC 3339 timestamp). Read-only. */
-    QDateTime created();
+    QDateTime created() const;
 
     /**
      * Last modification time of the event (as a RFC 3339 timestamp).
      * Read-only.
      */
-    QDateTime updated();
+    QDateTime updated() const;
 
     /** Title of the event. */
-    QString summary();
+    QString summary() const;
 
     /** Description of the event. Optional. **/
-    QString description();
+    QString description() const;
 
     /** Geographic location of the event as free-form text. Optional. */
-    QString location();
+    QString location() const;
 
     /**
      * The color of the event. This is an ID referring to an entry in the event
      * section of the colors definition (see the colors endpoint). Optional.
      */
-    QString colorId();
+    QString colorId() const;
 
     /** The creator of the event. Read-only. */
-    Actor creator();
+    Actor creator() const;
 
     /**
      * The organizer of the event. If the organizer is also an attendee, this is
@@ -360,45 +360,45 @@ public:
      * to True. To change the organizer, use the move operation. Read-only,
      * except when importing an event.
      */
-    Actor organizer();
+    Actor organizer() const;
 
     /**
      * The (inclusive) start time of the event. For a recurring event, this is
      * the start time of the first instance.
      */
-    PointInTime start();
+    PointInTime start() const;
 
     /**
      * The (exclusive) end time of the event. For a recurring event, this is the
      * end time of the first instance.
      */
-    PointInTime end();
+    PointInTime end() const;
 
     /**
      * Whether the end time is actually unspecified. An end time is still
      * provided for compatibility reasons, even if this attribute is set to
      * True. The default is False.
      */
-    bool endTimeUnspecified();
+    bool endTimeUnspecified() const;
 
     /**
      * List of RRULE, EXRULE, RDATE and EXDATE lines for a recurring event.
      * This field is omitted for single events or instances of recurring events.
      */
-    QList<QString> recurrence();
+    QList<QString> recurrence() const;
 
     /**
      * For an instance of a recurring event, this is the event ID of the
      * recurring event itself. Immutable.
      */
-    QString recurringEventId();
+    QString recurringEventId() const;
 
     /**
      * For an instance of a recurring event, this is the time at which this
      * event would start according to the recurrence data in the recurring event
      * identified by recurringEventId. Immutable.
      */
-    PointInTime originalStartTime();
+    PointInTime originalStartTime() const;
 
     /**
      * Whether the event blocks time on the calendar. Optional.
@@ -407,7 +407,7 @@ public:
      *            value.
      * "transparent" - The event does not block time on the calendar.
      */
-    Transparency transparency();
+    Transparency transparency() const;
 
     /**
      * Visibility of the event. Optional. Possible values are:
@@ -420,16 +420,16 @@ public:
      * "confidential" - The event is private. This value is provided for
      *                  compatibility reasons.
      */
-    Visibility visibility();
+    Visibility visibility() const;
 
     /** Event ID in the iCalendar format. */
-    QString iCalUID();
+    QString iCalUID() const;
 
     /** Sequence number as per iCalendar. */
-    int sequence();
+    int sequence() const;
 
     /** The attendees of the event. */
-    QList<Attendee> attendees();
+    QList<Attendee> attendees() const;
 
     /**
      * Whether attendees may have been omitted from the event's representation.
@@ -438,64 +438,64 @@ public:
      * to only update the participant's response. Optional.
      * The default is False.
      */
-    bool attendeesOmitted();
+    bool attendeesOmitted() const;
 
     /** Extended properties of the event. */
-    ExtendedProperties extendedProperties();
+    ExtendedProperties extendedProperties() const;
 
     /**
      * An absolute link to the Google+ hangout associated with this event.
      * Read-only.
      */
-    QString hangoutLink();
+    QString hangoutLink() const;
 
     /** A gadget that extends this event. */
-    Gadget gadget();
+    Gadget gadget() const;
 
     /**
      * Whether anyone can invite themselves to the event. Optional.
      * The default is False.
      */
-    bool anyoneCanAddSelf();
+    bool anyoneCanAddSelf() const;
 
     /**
      * Whether attendees other than the organizer can invite others to the
      * event. Optional. The default is True.
      */
-    bool guestsCanInviteOthers();
+    bool guestsCanInviteOthers() const;
 
     /** @todo missing documentation. */
-    bool guestsCanModify();
+    bool guestsCanModify() const;
 
     /**
      * Whether attendees other than the organizer can see who the event's
      * attendees are. Optional. The default is True.
      */
-    bool guestsCanSeeOtherGuests();
+    bool guestsCanSeeOtherGuests() const;
 
     /**
      * Whether this is a private event copy where changes are not shared with
      * other copies on other calendars. Optional. Immutable.
      * The default is False.
      */
-    bool privateCopy();
+    bool privateCopy() const;
 
     /**
      * Whether this is a locked event copy where no changes can be made to the
      * main event fields "summary", "description", "location", "start", "end"
      * or "recurrence". The default is False. Read-Only.
      */
-    bool locked();
+    bool locked() const;
 
     /** Information about the event's reminders for the authenticated user. */
-    Reminders reminders();
+    Reminders reminders() const;
 
     /**
      * Source of an event from which it was created; for example a web page, an
      * email message or any document identifiable by an URL using HTTP/HTTPS
      * protocol. Accessible only by the creator of the event.
      */
-    Source source();
+    Source source() const;
 
     /** Sets the event's status. */
     void setStatus(EventStatus status);
@@ -505,6 +505,9 @@ public:
 
     /** Sets the event's description. */
     void setDescription(QString description);
+
+    /** Sets the event's location. */
+    void setLocation(QString location);
 
     /** Sets the event's color id. */
     void setColorId(QString colorId);

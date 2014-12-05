@@ -24,6 +24,7 @@
 
 // Qt includes
 #include <QJsonArray>
+#include <QStringList>
 
 namespace APIV3 {
 
@@ -74,22 +75,22 @@ QJsonObject Event::toJsonObject() const
     eventObject.insert("creator", creatorObject);
 
     QJsonObject organizerObject;
-    organizerObject.insert("id", organizer().id);
-    organizerObject.insert("email", organizer().email);
-    organizerObject.insert("displayName", organizer().displayName);
-    organizerObject.insert("self", organizer().self);
+    organizerObject.insert("id", _organizer.id);
+    organizerObject.insert("email", _organizer.email);
+    organizerObject.insert("displayName", _organizer.displayName);
+    organizerObject.insert("self", _organizer.self);
     eventObject.insert("organizer", organizerObject);
 
     QJsonObject startObject;
-    startObject.insert("date", start().date.toString(Qt::ISODate));
-    startObject.insert("dateTime", start().dateTime.toString(Qt::ISODate));
-    startObject.insert("timeZone", start().timeZone.toString());
+    startObject.insert("date", _start.date.toString(Qt::ISODate));
+    startObject.insert("dateTime", _start.dateTime.toString(Qt::ISODate));
+    startObject.insert("timeZone", _start.timeZone);
     eventObject.insert("start", startObject);
 
     QJsonObject endObject;
-    endObject.insert("date", end().date.toString(Qt::ISODate));
-    endObject.insert("dateTime", end().dateTime.toString(Qt::ISODate));
-    endObject.insert("timeZone", end().timeZone.toString());
+    endObject.insert("date", _end.date.toString(Qt::ISODate));
+    endObject.insert("dateTime", _end.dateTime.toString(Qt::ISODate));
+    endObject.insert("timeZone", _end.timeZone);
     eventObject.insert("end", endObject);
 
     eventObject.insert("endTimeUnspecified", endTimeUnspecified());
@@ -103,12 +104,12 @@ QJsonObject Event::toJsonObject() const
     eventObject.insert("recurringEventId", recurringEventId());
 
     QJsonObject originalStartTimeObject;
-    originalStartTimeObject.insert("date", originalStartTime().date.toString(Qt::ISODate));
-    originalStartTimeObject.insert("dateTime", originalStartTime().dateTime.toString(Qt::ISODate));
-    originalStartTimeObject.insert("timeZone", originalStartTime().timeZone.toString());
+    originalStartTimeObject.insert("date", _originalStartTime.date.toString(Qt::ISODate));
+    originalStartTimeObject.insert("dateTime", _originalStartTime.dateTime.toString(Qt::ISODate));
+    originalStartTimeObject.insert("timeZone", _originalStartTime.timeZone);
     eventObject.insert("originalStartTime", originalStartTimeObject);
 
-    switch (transparency()) {
+    switch (_transparency) {
     case TransparencyNil:
         break;
     case TransparencyOpaque:
@@ -119,7 +120,7 @@ QJsonObject Event::toJsonObject() const
         break;
     }
 
-    switch (visibility()) {
+    switch (_visibility) {
     case VisibilityNil:
         break;
     case VisibilityDefault:
@@ -136,8 +137,8 @@ QJsonObject Event::toJsonObject() const
         break;
     }
 
-    eventObject.insert("iCalUID", iCalUID());
-    eventObject.insert("sequence", sequence());
+    eventObject.insert("iCalUID", _iCalUID);
+    eventObject.insert("sequence", _sequence);
 
     QJsonArray attendeesArray;
     foreach (Attendee attendee, _attendees) {
@@ -172,7 +173,7 @@ QJsonObject Event::toJsonObject() const
         attendeesArray.append(attendeeObject);
     }
     eventObject.insert("attendees", attendeesArray);
-    eventObject.insert("attendeesOmitted", attendeesOmitted());
+    eventObject.insert("attendeesOmitted", _attendeesOmitted);
 
     QJsonObject extendedPropertiesObject;
     QJsonObject privateObject;
@@ -192,18 +193,18 @@ QJsonObject Event::toJsonObject() const
     eventObject.insert("hangoutLink", hangoutLink());
 
     QJsonObject gadgetObject;
-    gadgetObject.insert("type", gadget().type);
-    gadgetObject.insert("title", gadget().title);
-    gadgetObject.insert("link", gadget().link);
-    gadgetObject.insert("iconLink", gadget().iconLink);
-    gadgetObject.insert("width", gadget().width);
-    gadgetObject.insert("height", gadget().height);
-    gadgetObject.insert("display", gadget().display);
+    gadgetObject.insert("type", _gadget.type);
+    gadgetObject.insert("title", _gadget.title);
+    gadgetObject.insert("link", _gadget.link);
+    gadgetObject.insert("iconLink", _gadget.iconLink);
+    gadgetObject.insert("width", _gadget.width);
+    gadgetObject.insert("height", _gadget.height);
+    gadgetObject.insert("display", _gadget.display);
 
     QJsonObject preferencesObject;
-    QList<QString> preferencesKeys = gadget().preferences.keys();
+    QList<QString> preferencesKeys = _gadget.preferences.keys();
     foreach(QString key, preferencesKeys) {
-        preferencesObject.insert(key, gadget().preferences.value(key));
+        preferencesObject.insert(key, _gadget.preferences.value(key));
     }
     gadgetObject.insert("preferences", preferencesObject);
     eventObject.insert("gadget", gadgetObject);
@@ -216,7 +217,7 @@ QJsonObject Event::toJsonObject() const
     eventObject.insert("locked", locked());
 
     QJsonObject remindersObject;
-    remindersObject.insert("useDefault", reminders().useDefault);
+    remindersObject.insert("useDefault", _reminders.useDefault);
     QJsonArray overridesArray;
     foreach (Reminders::Override override, _reminders.overrides) {
         QJsonObject overrideObject;
@@ -240,8 +241,8 @@ QJsonObject Event::toJsonObject() const
     eventObject.insert("reminders", remindersObject);
 
     QJsonObject sourceObject;
-    sourceObject.insert("url", source().url);
-    sourceObject.insert("title", source().title);
+    sourceObject.insert("url", _source.url);
+    sourceObject.insert("title", _source.title);
     eventObject.insert("source", sourceObject);
 
     return eventObject;
@@ -299,7 +300,7 @@ bool Event::fromJson(QJsonObject jsonObject)
     _end.dateTime = QDateTime::fromString(endObject.value("dateTime").toString(), Qt::ISODate);
     _end.timeZone = endObject.value("timeZone").toString();
 
-    _endTimeUnspecified = jsonObject.value("endTimeUnspecified").toString();
+    _endTimeUnspecified = jsonObject.value("endTimeUnspecified").toBool();
 
     QJsonArray recurrenceArray = jsonObject.value("recurrence").toArray();
     _recurrence.clear();
@@ -353,7 +354,7 @@ bool Event::fromJson(QJsonObject jsonObject)
     QJsonArray attendeesArray = jsonObject.value("attendees").toArray();
     _attendees.clear();
     while(attendeesArray.count()) {
-        QJsonObject attendeeObject = attendeesArray.at(0);
+        QJsonObject attendeeObject = attendeesArray.at(0).toObject();
         attendeesArray.removeFirst();
 
         Attendee attendee;
@@ -386,7 +387,7 @@ bool Event::fromJson(QJsonObject jsonObject)
         _attendees.append(attendee);
     }
 
-    _attendeesOmitted = jsonObject.value("attendeesOmitted").toString();
+    _attendeesOmitted = jsonObject.value("attendeesOmitted").toBool();
 
     QJsonObject extendedPropertiesObject = jsonObject
             .value("extendedProperties").toObject();
@@ -445,7 +446,7 @@ bool Event::fromJson(QJsonObject jsonObject)
     QJsonArray overridesArray = remindersObject.value("overrides").toArray();
     _reminders.overrides.clear();
     while(overridesArray.count()) {
-        QJsonObject overrideObject = overridesArray.at(0);
+        QJsonObject overrideObject = overridesArray.at(0).toObject();
         overridesArray.removeFirst();
 
         Reminders::Override override;
@@ -472,167 +473,167 @@ bool Event::fromJson(QJsonObject jsonObject)
     return true;
 }
 
-QString Event::status()
+Event::EventStatus Event::status() const
 {
     return _status;
 }
 
-QString Event::htmlLink()
+QString Event::htmlLink() const
 {
     return _htmlLink;
 }
 
-QDateTime Event::created()
+QDateTime Event::created() const
 {
     return _created;
 }
 
-QDateTime Event::updated()
+QDateTime Event::updated() const
 {
     return _updated;
 }
 
-QString Event::summary()
+QString Event::summary() const
 {
     return _summary;
 }
 
-QString Event::description()
+QString Event::description() const
 {
     return _description;
 }
 
-QString Event::location()
+QString Event::location() const
 {
     return _location;
 }
 
-QString Event::colorId()
+QString Event::colorId() const
 {
     return _colorId;
 }
 
-Event::Actor Event::creator()
+Event::Actor Event::creator() const
 {
     return _creator;
 }
 
-Event::Actor Event::organizer()
+Event::Actor Event::organizer() const
 {
     return _organizer;
 }
 
-Event::PointInTime Event::start()
+Event::PointInTime Event::start() const
 {
     return _start;
 }
 
-Event::PointInTime Event::end()
+Event::PointInTime Event::end() const
 {
     return _end;
 }
 
-bool Event::endTimeUnspecified()
+bool Event::endTimeUnspecified() const
 {
     return _endTimeUnspecified;
 }
 
-QList<QString> Event::recurrence()
+QList<QString> Event::recurrence() const
 {
     return _recurrence;
 }
 
-QString Event::recurringEventId()
+QString Event::recurringEventId() const
 {
     return _recurringEventId;
 }
 
-Event::PointInTime Event::originalStartTime()
+Event::PointInTime Event::originalStartTime() const
 {
     return _originalStartTime;
 }
 
-Event::Transparency Event::transparency()
+Event::Transparency Event::transparency() const
 {
     return _transparency;
 }
 
-Event::Visibility Event::visibility()
+Event::Visibility Event::visibility() const
 {
     return _visibility;
 }
 
-QString Event::iCalUID()
+QString Event::iCalUID() const
 {
     return _iCalUID;
 }
 
-int Event::sequence()
+int Event::sequence() const
 {
     return _sequence;
 }
 
-QList<Event::Attendee> Event::attendees()
+QList<Event::Attendee> Event::attendees() const
 {
     return _attendees;
 }
 
-bool Event::attendeesOmitted()
+bool Event::attendeesOmitted() const
 {
     return _attendeesOmitted;
 }
 
-Event::ExtendedProperties Event::extendedProperties()
+Event::ExtendedProperties Event::extendedProperties() const
 {
     return _extendedProperties;
 }
 
-QString Event::hangoutLink()
+QString Event::hangoutLink() const
 {
     return _hangoutLink;
 }
 
-Event::Gadget Event::gadget()
+Event::Gadget Event::gadget() const
 {
     return _gadget;
 }
 
-bool Event::anyoneCanAddSelf()
+bool Event::anyoneCanAddSelf() const
 {
     return _anyoneCanAddSelf;
 }
 
-bool Event::guestsCanInviteOthers()
+bool Event::guestsCanInviteOthers() const
 {
     return _guestsCanInviteOthers;
 }
 
-bool Event::guestsCanModify()
+bool Event::guestsCanModify() const
 {
     return _guestsCanModify;
 }
 
-bool Event::guestsCanSeeOtherGuests()
+bool Event::guestsCanSeeOtherGuests() const
 {
     return _guestsCanSeeOtherGuests;
 }
 
-bool Event::privateCopy()
+bool Event::privateCopy() const
 {
     return _privateCopy;
 }
 
-bool Event::locked()
+bool Event::locked() const
 {
     return _locked;
 }
 
-Event::Reminders Event::reminders()
+Event::Reminders Event::reminders() const
 {
     return _reminders;
 }
 
-Event::Source Event::source()
+Event::Source Event::source() const
 {
     return _source;
 }

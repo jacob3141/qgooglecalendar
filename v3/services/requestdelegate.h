@@ -26,6 +26,6 @@ class QNetworkReply;
 class RequestDelegate {
 protected:
     virtual void handleReply(Request *request,
-                             QNetworkReply *networkReply) = 0;
-    virtual void requestTimedOut(Request *request) = 0;
+                             QNetworkReply *networkReply) { };
+    virtual void requestTimedOut(Request *request) { };
 };

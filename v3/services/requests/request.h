@@ -112,7 +112,7 @@ private:
     /**
      * @brief block
      */
-    void block();
+    void block(int timeout);
 
     RequestDelegate *_requestDelegate;
     QNetworkAccessManager _networkAccessManager;

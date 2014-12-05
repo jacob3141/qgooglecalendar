@@ -34,16 +34,6 @@ QString Setting::kind() const
     return "calendar#setting";
 }
 
-QString Setting::eTag() const
-{
-    return _eTag;
-}
-
-QString Setting::id() const
-{
-    return _id;
-}
-
 QJsonObject Setting::toJsonObject() const
 {
     QJsonObject setting;

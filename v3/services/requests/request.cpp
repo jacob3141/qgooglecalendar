@@ -53,7 +53,7 @@ void Request::configureAccessToken(QString accessToken)
 bool Request::performSync(int timeout)
 {
     bool success = startRequest(timeout);
-    block();
+    block(timeout);
     return success;
 }
 
@@ -80,7 +80,7 @@ QString Request::userAgent()
 void Request::receivedNetworkReply(QNetworkReply *networkReply)
 {
     if(_requestDelegate) {
-        _requestDelegate->handleTransactionResult(this, networkReply);
+        _requestDelegate->handleReply(this, networkReply);
     }
 
     // Unlock to indicate we're done.
@@ -92,7 +92,7 @@ bool Request::startRequest(int timeout)
     // Try locking to ensure that there is no other request pending.
     if(!_requestMutex->tryLock(timeout * 1000)) {
         if(_requestDelegate) {
-            _requestDelegate->transactionTimedOut(this);
+            _requestDelegate->requestTimedOut(this);
         }
         // Do not perform request when another request is pending.
         return false;
@@ -116,7 +116,7 @@ bool Request::startRequest(int timeout)
     return true;
 }
 
-void Request::block()
+void Request::block(int timeout)
 {
     // Try locking the transaction mutex to probe if it has been unlocked.
     if(_requestMutex->tryLock(timeout * 1000)) {

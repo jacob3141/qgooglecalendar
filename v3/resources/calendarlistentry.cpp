@@ -32,7 +32,7 @@ CalendarListEntry::CalendarListEntry() :
 {
 }
 
-QString CalendarListEntry::kind()
+QString CalendarListEntry::kind() const
 {
     return "calendar#calendarListEntry";
 }
@@ -72,16 +72,6 @@ QString CalendarListEntry::timeZone() const
     return _timeZone;
 }
 
-QString CalendarListEntry::eTag() const
-{
-    return _eTag;
-}
-
-QString CalendarListEntry::id() const
-{
-    return _id;
-}
-
 QJsonObject CalendarListEntry::toJsonObject() const
 {
     QJsonObject calendarListEntry;
@@ -103,8 +93,8 @@ QJsonObject CalendarListEntry::toJsonObject() const
     QJsonArray defaultReminders;
     foreach(DefaultReminder defaultReminder, _defaultReminders) {
         QJsonObject defaultReminderObject;
-        defaultReminderObject.value("method", defaultReminder.method);
-        defaultReminderObject.value("minutes"),
+        //defaultReminderObject.value("method", defaultReminder.method);
+        //defaultReminderObject.value("minutes"),
         defaultReminders.append(defaultReminderObject);
     }
     calendarListEntry.insert("defaultReminders", defaultReminders);

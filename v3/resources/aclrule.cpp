@@ -34,30 +34,54 @@ QString AclRule::kind() const
     return "calendar#aclRule";
 }
 
-QString AclRule::eTag() const
-{
-    return _eTag;
-}
-
-QString AclRule::id() const
-{
-    return _id;
-}
-
 QJsonObject AclRule::toJsonObject() const
 {
-    QJsonObject rule;
-    rule.insert("kind", kind());
-    rule.insert("etag", eTag());
-    rule.insert("id", id());
+    QJsonObject ruleObject;
+    ruleObject.insert("kind", kind());
+    ruleObject.insert("etag", eTag());
+    ruleObject.insert("id", id());
 
-    QJsonObject scope;
-    scope.insert("type", scopeType());
-    scope.insert("value", scopeValue());
-    rule.insert("scope", scope);
+    QJsonObject scopeObject;
+    switch (scopeType()) {
+    case ScopeTypeDefault:
+        scopeObject.insert("type", "default");
+        break;
+    case ScopeTypeUser:
+        scopeObject.insert("type", "user");
+        break;
+    case ScopeTypeGroup:
+        scopeObject.insert("type", "group");
+        break;
+    case ScopeTypeDomain:
+        scopeObject.insert("type", "domain");
+        break;
+    case ScopeTypeNil:
+        break;
+    }
+    scopeObject.insert("value", scopeValue());
+    ruleObject.insert("scope", scopeObject);
 
-    rule.insert("role", role());
-    return rule;
+    switch(role()) {
+    case RoleNone:
+        ruleObject.insert("role", "none");
+        break;
+    case RoleFreeBusyReader:
+        ruleObject.insert("role", "freeBusyReader");
+        break;
+    case RoleReader:
+        ruleObject.insert("role", "reader");
+        break;
+    case RoleWriter:
+        ruleObject.insert("role", "writer");
+        break;
+    case RoleOwner:
+        ruleObject.insert("role", "owner");
+        break;
+    case RoleNil:
+        break;
+    }
+
+    return ruleObject;
 }
 
 bool AclRule::fromJson(QJsonObject jsonObject)
@@ -70,10 +94,44 @@ bool AclRule::fromJson(QJsonObject jsonObject)
     _id = jsonObject.value("id").toString();
 
     QJsonObject scope = jsonObject.value("scope").toObject();
-    _scopeType = scope.value("type").toString();
+
+    QString scopeType = scope.value("type").toString();
+    if(scopeType == "default") {
+        _scopeType = ScopeTypeDefault;
+    } else
+    if(scopeType == "user") {
+        _scopeType = ScopeTypeUser;
+    } else
+    if(scopeType == "group") {
+        _scopeType = ScopeTypeGroup;
+    } else
+    if(scopeType == "domain") {
+        _scopeType = ScopeTypeDomain;
+    } else {
+        _scopeType = ScopeTypeNil;
+    }
+
     _scopeValue = scope.value("value").toString();
 
-    _role = jsonObject.value("role").toString();
+    QString role = jsonObject.value("role").toString();
+    if(role == "none") {
+        _role = RoleNone;
+    } else
+    if(role == "freeBusyReader") {
+        _role = RoleFreeBusyReader;
+    } else
+    if(role == "reader") {
+        _role = RoleReader;
+    } else
+    if(role == "writer") {
+        _role = RoleWriter;
+    } else
+    if(role == "owner") {
+        _role = RoleOwner;
+    } else {
+        _role = RoleNil;
+    }
+
     return true;
 }
 

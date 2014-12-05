@@ -49,9 +49,9 @@ public:
 
 public:
     // Synchronous methods, blocking
-    bool removeSync(Calendar calendar, int ruleId);
-    AclRule getSync(Calendar calendar, int ruleId);
-    int insertSync(Calendar calendar, AclRule rule);
+    bool removeSync(QString calendarId, QString ruleId);
+    AclRule getSync(QString calendarId, QString ruleId);
+    int insertSync(QString calendarId, AclRule rule);
     // list
     // patch
     // update
@@ -59,9 +59,9 @@ public:
 
 public slots:
     // Asynchronous methods, non-blocking
-    void removeAsync(Calendar calendar, int ruleId);
-    void getAsync(Calendar calendar, int ruleId);
-    void insertAsync(Calendar calendar, AclRule rule);
+    void removeAsync(QString calendarId, QString ruleId);
+    void getAsync(QString calendarId, QString ruleId);
+    void insertAsync(QString calendarId, AclRule rule);
     // list
     // patch
     // update
