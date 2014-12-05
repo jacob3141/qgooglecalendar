@@ -39,30 +39,72 @@ namespace APIV3 {
 class Event : public Resource
 {
 public:
+    /**
+     * The attendee's response status. Possible values are:
+     * "needsAction" - The attendee has not responded to the invitation.
+     * "declined" - The attendee has declined the invitation.
+     * "tentative" - The attendee has tentatively accepted the invitation.
+     * "accepted" - The attendee has accepted the invitation.
+     */
     enum ResponseStatus {
+        ResponseStatusNil,
         ResponseStatusNeedsAction,
         ResponseStatusDeclined,
         ResponseStatusTentative,
         ResponseStatusAccepted
     };
 
+    /**
+     * The gadget's display mode. Optional. Possible values are:
+     * "icon" - The gadget displays next to the event's title in the
+     *          calendar view.
+     * "chip" - The gadget displays when the event is clicked.
+     */
     enum GadgetDisplayMode {
+        GadgetDisplayModeNil,
         GadgetDisplayModeIcon,
         GadgetDisplayModeChip
     };
 
+    /**
+     * Status of the event. Optional. Possible values are:
+     * "confirmed" - The event is confirmed. This is the default status.
+     * "tentative" - The event is tentatively confirmed.
+     * "cancelled" - The event is cancelled.
+     */
     enum EventStatus {
+        EventStatusNil,
         EventStatusConfirmed,
         EventStatusTentative,
         EventStatusCancelled
     };
 
+    /**
+     * Whether the event blocks time on the calendar. Optional.
+     * Possible values are:
+     * "opaque" - The event blocks time on the calendar. This is the default
+     *            value.
+     * "transparent" - The event does not block time on the calendar.
+     */
     enum Transparency {
+        TransparencyNil,
         TransparencyOpaque,
         TransparencyTransparent
     };
 
+    /**
+     * Visibility of the event. Optional. Possible values are:
+     * "default" - Uses the default visibility for events on the calendar.
+     *             This is the default value.
+     * "public" - The event is public and event details are visible to all
+     *            readers of the calendar.
+     * "private" - The event is private and only event attendees may view event
+     *             details.
+     * "confidential" - The event is private. This value is provided for
+     *                  compatibility reasons.
+     */
     enum Visibility {
+        VisibilityNil,
         VisibilityDefault,
         VisibilityPublic,
         VisibilityPrivate,
@@ -206,7 +248,14 @@ public:
     };
 
     struct Reminders {
+        /**
+         * The method used by this reminder. Possible values are:
+         * "email" - Reminders are sent via email.
+         * "sms" - Reminders are sent via SMS.
+         * "popup" - Reminders are sent via a UI popup.
+         */
         enum Method {
+            MethodNil,
             MethodEmail,
             MethodSms,
             MethodPopup
@@ -379,9 +428,7 @@ public:
     /** Sequence number as per iCalendar. */
     int sequence();
 
-    /**
-     * The attendees of the event.
-     */
+    /** The attendees of the event. */
     QList<Attendee> attendees();
 
     /**

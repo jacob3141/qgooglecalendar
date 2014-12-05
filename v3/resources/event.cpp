@@ -22,110 +22,9 @@
 // Own includes
 #include "event.h"
 
-//{
-//  "kind": "calendar#event",
-//  "etag": etag,
-//  "id": string,
-//  "status": string,
-//  "htmlLink": string,
-//  "created": datetime,
-//  "updated": datetime,
-//  "summary": string,
-//  "description": string,
-//  "location": string,
-//  "colorId": string,
-//  "creator": {
-//    "id": string,
-//    "email": string,
-//    "displayName": string,
-//    "self": boolean
-//  },
-//  "organizer": {
-//    "id": string,
-//    "email": string,
-//    "displayName": string,
-//    "self": boolean
-//  },
-//  "start": {
-//    "date": date,
-//    "dateTime": datetime,
-//    "timeZone": string
-//  },
-//  "end": {
-//    "date": date,
-//    "dateTime": datetime,
-//    "timeZone": string
-//  },
-//  "endTimeUnspecified": boolean,
-//  "recurrence": [
-//    string
-//  ],
-//  "recurringEventId": string,
-//  "originalStartTime": {
-//    "date": date,
-//    "dateTime": datetime,
-//    "timeZone": string
-//  },
-//  "transparency": string,
-//  "visibility": string,
-//  "iCalUID": string,
-//  "sequence": integer,
-//  "attendees": [
-//    {
-//      "id": string,
-//      "email": string,
-//      "displayName": string,
-//      "organizer": boolean,
-//      "self": boolean,
-//      "resource": boolean,
-//      "optional": boolean,
-//      "responseStatus": string,
-//      "comment": string,
-//      "additionalGuests": integer
-//    }
-//  ],
-//  "attendeesOmitted": boolean,
-//  "extendedProperties": {
-//    "private": {
-//      (key): string
-//    },
-//    "shared": {
-//      (key): string
-//    }
-//  },
-//  "hangoutLink": string,
-//  "gadget": {
-//    "type": string,
-//    "title": string,
-//    "link": string,
-//    "iconLink": string,
-//    "width": integer,
-//    "height": integer,
-//    "display": string,
-//    "preferences": {
-//      (key): string
-//    }
-//  },
-//  "anyoneCanAddSelf": boolean,
-//  "guestsCanInviteOthers": boolean,
-//  "guestsCanModify": boolean,
-//  "guestsCanSeeOtherGuests": boolean,
-//  "privateCopy": boolean,
-//  "locked": boolean,
-//  "reminders": {
-//    "useDefault": boolean,
-//    "overrides": [
-//      {
-//        "method": string,
-//        "minutes": integer
-//      }
-//    ]
-//  },
-//  "source": {
-//    "url": string,
-//    "title": string
-//  }
-//}
+// Qt includes
+#include <QJsonArray>
+
 namespace APIV3 {
 
 Event::Event() :
@@ -140,9 +39,212 @@ QString Event::kind() const
 
 QJsonObject Event::toJsonObject() const
 {
-    QJsonObject event;
+    QJsonObject eventObject;
+    eventObject.insert("kind", kind());
+    eventObject.insert("etag", eTag());
+    eventObject.insert("id", id());
 
-    return event;
+    switch(status()) {
+    case EventStatusNil:
+        break;
+    case EventStatusConfirmed:
+        eventObject.insert("status", "confirmed");
+        break;
+    case EventStatusTentative:
+        eventObject.insert("status", "tentative");
+        break;
+    case EventStatusCancelled:
+        eventObject.insert("status", "cancelled");
+        break;
+    }
+
+    eventObject.insert("htmlLink", htmlLink());
+    eventObject.insert("created", created().toString());
+    eventObject.insert("updated", updated().toString());
+    eventObject.insert("summary", summary());
+    eventObject.insert("description", description());
+    eventObject.insert("location", location());
+    eventObject.insert("colorId", colorId());
+
+    QJsonObject creatorObject;
+    creatorObject.insert("id", creator().id);
+    creatorObject.insert("email", creator().email);
+    creatorObject.insert("displayName", creator().displayName);
+    creatorObject.insert("self", creator().self);
+    eventObject.insert("creator", creatorObject);
+
+    QJsonObject organizerObject;
+    organizerObject.insert("id", organizer().id);
+    organizerObject.insert("email", organizer().email);
+    organizerObject.insert("displayName", organizer().displayName);
+    organizerObject.insert("self", organizer().self);
+    eventObject.insert("organizer", organizerObject);
+
+    QJsonObject startObject;
+    startObject.insert("date", start().date.toString());
+    startObject.insert("dateTime", start().dateTime.toString());
+    startObject.insert("timeZone", start().timeZone.toString());
+    eventObject.insert("start", startObject);
+
+    QJsonObject endObject;
+    endObject.insert("date", end().date.toString());
+    endObject.insert("dateTime", end().dateTime.toString());
+    endObject.insert("timeZone", end().timeZone.toString());
+    eventObject.insert("end", endObject);
+
+    eventObject.insert("endTimeUnspecified", endTimeUnspecified());
+
+    QJsonArray recurrenceArray;
+    foreach (QString recurrenceItem, _recurrence) {
+        recurrenceArray.append(recurrenceItem);
+    }
+    eventObject.insert("recurrence", recurrenceArray);
+
+    eventObject.insert("recurringEventId", recurringEventId());
+
+    QJsonObject originalStartTimeObject;
+    originalStartTimeObject.insert("date", originalStartTime().date.toString());
+    originalStartTimeObject.insert("dateTime", originalStartTime().dateTime.toString());
+    originalStartTimeObject.insert("timeZone", originalStartTime().timeZone.toString());
+    eventObject.insert("originalStartTime", originalStartTimeObject);
+
+    switch (transparency()) {
+    case TransparencyNil:
+        break;
+    case TransparencyOpaque:
+        eventObject.insert("transparency", "opaque");
+        break;
+    case TransparencyTransparent:
+        eventObject.insert("transparency", "transparent");
+        break;
+    }
+
+    switch (visibility()) {
+    case VisibilityNil:
+        break;
+    case VisibilityDefault:
+        eventObject.insert("visibility", "default");
+        break;
+    case VisibilityPublic:
+        eventObject.insert("visibility", "public");
+        break;
+    case VisibilityPrivate:
+        eventObject.insert("visibility", "private");
+        break;
+    case VisibilityConfidential:
+        eventObject.insert("visibility", "confidential");
+        break;
+    }
+
+    eventObject.insert("iCalUID", iCalUID());
+    eventObject.insert("sequence", sequence());
+
+    QJsonArray attendeesArray;
+    foreach (Attendee attendee, _attendees) {
+        QJsonObject attendeeObject;
+        attendeeObject.insert("id", attendee.id);
+        attendeeObject.insert("email", attendee.email);
+        attendeeObject.insert("displayName", attendee.displayName);
+        attendeeObject.insert("organizer", attendee.organizer);
+        attendeeObject.insert("self", attendee.self);
+        attendeeObject.insert("resource", attendee.resource);
+        attendeeObject.insert("optional", attendee.optional);
+
+        switch(attendee.responseStatus) {
+        case ResponseStatusNil:
+            break;
+        case ResponseStatusNeedsAction:
+            attendeeObject.insert("responseStatus", "needsAction");
+            break;
+        case ResponseStatusDeclined:
+            attendeeObject.insert("responseStatus", "declined");
+            break;
+        case ResponseStatusTentative:
+            attendeeObject.insert("responseStatus", "tentative");
+            break;
+        case ResponseStatusAccepted:
+            attendeeObject.insert("responseStatus", "accepted");
+            break;
+        }
+
+        attendeeObject.insert("comment", attendee.comment);
+        attendeeObject.insert("additionalGuests", attendee.additionalGuests);
+        attendeesArray.append(attendeeObject);
+    }
+    eventObject.insert("attendees", attendeesArray);
+    eventObject.insert("attendeesOmitted", attendeesOmitted());
+
+    QJsonObject extendedPropertiesObject;
+    QJsonObject privateObject;
+    QList<QString> privateKeys = _extendedProperties.privateProperties.keys();
+    foreach (QString key, privateKeys) {
+        privateObject.insert(key, _extendedProperties.privateProperties.value(key));
+    }
+    extendedPropertiesObject.insert("private", privateObject);
+    QJsonObject sharedObject;
+    QList<QString> sharedKeys = _extendedProperties.sharedProperties.keys();
+    foreach (QString key, sharedKeys) {
+        sharedObject.insert(key, _extendedProperties.sharedProperties.value(key));
+    }
+    extendedPropertiesObject.insert("shared", sharedObject);
+    eventObject.insert("extendedProperties", extendedPropertiesObject);
+
+    eventObject.insert("hangoutLink", hangoutLink());
+
+    QJsonObject gadgetObject;
+    gadgetObject.insert("type", gadget().type);
+    gadgetObject.insert("title", gadget().title);
+    gadgetObject.insert("link", gadget().link);
+    gadgetObject.insert("iconLink", gadget().iconLink);
+    gadgetObject.insert("width", gadget().width);
+    gadgetObject.insert("height", gadget().height);
+    gadgetObject.insert("display", gadget().display);
+
+    QJsonObject preferencesObject;
+    QList<QString> preferencesKeys = gadget().preferences.keys();
+    foreach(QString key, preferencesKeys) {
+        preferencesObject.insert(key, gadget().preferences.value(key));
+    }
+    gadgetObject.insert("preferences", preferencesObject);
+    eventObject.insert("gadget", gadgetObject);
+
+    eventObject.insert("anyoneCanAddSelf", anyoneCanAddSelf());
+    eventObject.insert("guestsCanInviteOthers", guestsCanInviteOthers());
+    eventObject.insert("guestsCanModify", guestsCanModify());
+    eventObject.insert("guestsCanSeeOtherGuests", guestsCanSeeOtherGuests());
+    eventObject.insert("privateCopy", privateCopy());
+    eventObject.insert("locked", locked());
+
+    QJsonObject remindersObject;
+    remindersObject.insert("useDefault", reminders().useDefault);
+    QJsonArray overridesArray;
+    foreach (Reminders::Override override, _reminders.overrides) {
+        QJsonObject overrideObject;
+        switch (override.method) {
+        case Reminders::MethodNil:
+            break;
+        case Reminders::MethodEmail:
+            overrideObject.insert("method", "email");
+            break;
+        case Reminders::MethodSms:
+            overrideObject.insert("method", "sms");
+            break;
+        case Reminders::MethodPopup:
+            overrideObject.insert("method", "popup");
+            break;
+        }
+        overrideObject.insert("minutes", override.minutes);
+        overridesArray.append(overrideObject);
+    }
+    remindersObject.insert("overrides", overridesArray);
+    eventObject.insert("reminders", remindersObject);
+
+    QJsonObject sourceObject;
+    sourceObject.insert("url", source().url);
+    sourceObject.insert("title", source().title);
+    eventObject.insert("source", sourceObject);
+
+    return eventObject;
 }
 
 bool Event::fromJson(QJsonObject jsonObject)
@@ -151,6 +253,110 @@ bool Event::fromJson(QJsonObject jsonObject)
         return false;
     }
 
+    //{
+    //  "kind": "calendar#event",
+    //  "etag": etag,
+    //  "id": string,
+    //  "status": string,
+    //  "htmlLink": string,
+    //  "created": datetime,
+    //  "updated": datetime,
+    //  "summary": string,
+    //  "description": string,
+    //  "location": string,
+    //  "colorId": string,
+    //  "creator": {
+    //    "id": string,
+    //    "email": string,
+    //    "displayName": string,
+    //    "self": boolean
+    //  },
+    //  "organizer": {
+    //    "id": string,
+    //    "email": string,
+    //    "displayName": string,
+    //    "self": boolean
+    //  },
+    //  "start": {
+    //    "date": date,
+    //    "dateTime": datetime,
+    //    "timeZone": string
+    //  },
+    //  "end": {
+    //    "date": date,
+    //    "dateTime": datetime,
+    //    "timeZone": string
+    //  },
+    //  "endTimeUnspecified": boolean,
+    //  "recurrence": [
+    //    string
+    //  ],
+    //  "recurringEventId": string,
+    //  "originalStartTime": {
+    //    "date": date,
+    //    "dateTime": datetime,
+    //    "timeZone": string
+    //  },
+    //  "transparency": string,
+    //  "visibility": string,
+    //  "iCalUID": string,
+    //  "sequence": integer,
+    //  "attendees": [
+    //    {
+    //      "id": string,
+    //      "email": string,
+    //      "displayName": string,
+    //      "organizer": boolean,
+    //      "self": boolean,
+    //      "resource": boolean,
+    //      "optional": boolean,
+    //      "responseStatus": string,
+    //      "comment": string,
+    //      "additionalGuests": integer
+    //    }
+    //  ],
+    //  "attendeesOmitted": boolean,
+    //  "extendedProperties": {
+    //    "private": {
+    //      (key): string
+    //    },
+    //    "shared": {
+    //      (key): string
+    //    }
+    //  },
+    //  "hangoutLink": string,
+    //  "gadget": {
+    //    "type": string,
+    //    "title": string,
+    //    "link": string,
+    //    "iconLink": string,
+    //    "width": integer,
+    //    "height": integer,
+    //    "display": string,
+    //    "preferences": {
+    //      (key): string
+    //    }
+    //  },
+    //  "anyoneCanAddSelf": boolean,
+    //  "guestsCanInviteOthers": boolean,
+    //  "guestsCanModify": boolean,
+    //  "guestsCanSeeOtherGuests": boolean,
+    //  "privateCopy": boolean,
+    //  "locked": boolean,
+    //  "reminders": {
+    //    "useDefault": boolean,
+    //    "overrides": [
+    //      {
+    //        "method": string,
+    //        "minutes": integer
+    //      }
+    //    ]
+    //  },
+    //  "source": {
+    //    "url": string,
+    //    "title": string
+    //  }
+    //}
     return true;
 }
 
