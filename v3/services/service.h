@@ -29,6 +29,7 @@ namespace APIV3 {
 
 class Service : public QObject
 {
+    Q_OBJECT
 public:
     Service(QObject *parent = 0);
 

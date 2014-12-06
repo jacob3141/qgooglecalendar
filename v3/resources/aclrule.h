@@ -24,9 +24,6 @@
 // Own includes
 #include "resource.h"
 
-// Qt includes
-#include <QObject>
-
 namespace APIV3 {
 
 /**
@@ -35,7 +32,6 @@ namespace APIV3 {
  */
 class AclRule : public Resource
 {
-    Q_OBJECT
 public:
     explicit AclRule();
 

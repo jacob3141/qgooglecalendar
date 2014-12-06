@@ -87,7 +87,6 @@ void Acl::insertAsync(QString calendarId, AclRule rule)
 }
 
 // APIRequestDelegate
-
 void Acl::handleReply(Request *request,
                       QNetworkReply *networkReply)
 {

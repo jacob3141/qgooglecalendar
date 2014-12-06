@@ -48,6 +48,10 @@ public:
     explicit Acl(QObject *parent = 0);
 
 public:
+    void handleReply(Request *request, QNetworkReply *networkReply);
+    void requestTimedOut(Request *request);
+
+public:
     // Synchronous methods, blocking
     bool removeSync(QString calendarId, QString ruleId);
     AclRule getSync(QString calendarId, QString ruleId);
@@ -72,10 +76,6 @@ signals:
     void removeFinished(Calendar calendar, int ruleId, bool success);
     void getFinished(Calendar calendar, AclRule rule);
     void insertFinished(Calendar calendar, int ruleId);
-
-protected:
-    void handleReply(Request *request, QNetworkReply *networkReply);
-    void requestTimedOut(Request *request);
 
 private:
     void handleRemoveReply(QNetworkReply* networkReply);

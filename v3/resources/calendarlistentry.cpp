@@ -74,21 +74,21 @@ QString CalendarListEntry::timeZone() const
 
 QJsonObject CalendarListEntry::toJsonObject() const
 {
-    QJsonObject calendarListEntry;
-    calendarListEntry.insert("kind", kind());
-    calendarListEntry.insert("etag", eTag());
-    calendarListEntry.insert("id", id());
-    calendarListEntry.insert("summary", summary());
-    calendarListEntry.insert("description", description());
-    calendarListEntry.insert("location", location());
-    calendarListEntry.insert("timeZone", timeZone());
-    calendarListEntry.insert("summaryOverride", summaryOverride());
-    calendarListEntry.insert("colorId", colorId());
-    calendarListEntry.insert("backgroundColor", backgroundColor());
-    calendarListEntry.insert("foregroundColor", foregroundColor());
-    calendarListEntry.insert("hidden", hidden());
-    calendarListEntry.insert("selected", selected());
-    calendarListEntry.insert("accessRole", accessRole());
+    QJsonObject calendarListEntryObject;
+    calendarListEntryObject.insert("kind", kind());
+    calendarListEntryObject.insert("etag", eTag());
+    calendarListEntryObject.insert("id", id());
+    calendarListEntryObject.insert("summary", summary());
+    calendarListEntryObject.insert("description", description());
+    calendarListEntryObject.insert("location", location());
+    calendarListEntryObject.insert("timeZone", timeZone());
+    calendarListEntryObject.insert("summaryOverride", summaryOverride());
+    calendarListEntryObject.insert("colorId", colorId());
+    calendarListEntryObject.insert("backgroundColor", backgroundColor());
+    calendarListEntryObject.insert("foregroundColor", foregroundColor());
+    calendarListEntryObject.insert("hidden", hidden());
+    calendarListEntryObject.insert("selected", selected());
+    calendarListEntryObject.insert("accessRole", accessRole());
 
     QJsonArray defaultReminders;
     foreach(DefaultReminder defaultReminder, _defaultReminders) {
@@ -97,7 +97,7 @@ QJsonObject CalendarListEntry::toJsonObject() const
         //defaultReminderObject.value("minutes"),
         defaultReminders.append(defaultReminderObject);
     }
-    calendarListEntry.insert("defaultReminders", defaultReminders);
+    calendarListEntryObject.insert("defaultReminders", defaultReminders);
 
 //      "defaultReminders": [
 //        {
@@ -115,9 +115,9 @@ QJsonObject CalendarListEntry::toJsonObject() const
 //      },
 
 
-    calendarListEntry.insert("primary", primary());
-    calendarListEntry.insert("deleted", deleted());
-    return calendarListEntry;
+    calendarListEntryObject.insert("primary", primary());
+    calendarListEntryObject.insert("deleted", deleted());
+    return calendarListEntryObject;
 }
 
 bool CalendarListEntry::fromJson(QJsonObject jsonObject)

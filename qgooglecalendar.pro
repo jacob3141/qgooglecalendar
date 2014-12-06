@@ -23,9 +23,9 @@ QT       += core network
 QT       -= gui
 
 TEMPLATE = lib
-CONFIG += static
+CONFIG += staticlib flat
 
-TARGET = libqgooglecalendar
+TARGET = qgooglecalendar
 
 HEADERS += \
     googlecalendarservice.h \

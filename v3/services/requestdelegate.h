@@ -21,11 +21,15 @@
 
 #pragma once
 
+namespace APIV3 {
+
 class Request;
 class QNetworkReply;
 class RequestDelegate {
-protected:
+public:
     virtual void handleReply(Request *request,
-                             QNetworkReply *networkReply) { };
-    virtual void requestTimedOut(Request *request) { };
+                             QNetworkReply *networkReply) = 0;
+    virtual void requestTimedOut(Request *request) = 0;
 };
+
+} // APIV3

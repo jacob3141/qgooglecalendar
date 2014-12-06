@@ -38,6 +38,7 @@ namespace APIV3 {
 class Request : public QObject
 {
     Q_OBJECT
+    friend class RequestDelegate;
 public:
     enum HttpMethod {
         HttpMethodGet,
