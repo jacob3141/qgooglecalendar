@@ -22,26 +22,27 @@
 #pragma once
 
 // Own includes
-#include "request.h"
+#include "requestoperation.h"
 #include "v3/resources/calendar.h"
 #include "v3/services/requestdelegate.h"
 
 namespace APIV3 {
 
-class AclRemoveRequest : public Request {
+class AclPatch : public RequestOperation {
 public:
-    AclRemoveRequest(RequestDelegate *requestDelegate, QObject *parent = 0)
-        : Request(requestDelegate, parent) {
+    AclPatch(RequestOperationDelegate *requestDelegate, QObject *parent = 0)
+        : RequestOperation(requestDelegate, parent) {
     }
 
-    void configure(QString calendarId, QString ruleId) {
+    void setParameters(QString calendarId, QString ruleId) {
         _calendarId = calendarId;
         _ruleId = ruleId;
     }
 
     QNetworkRequest networkRequest() {
         QNetworkRequest networkRequest;
-        networkRequest.setUrl(QString("https://www.googleapis.com/calendar/v3/calendars/%1/acl/%2")
+        networkRequest.setUrl(QString("%1/calendars/%2/acl/%3")
+                              .arg(baseUrl())
                               .arg(_calendarId)
                               .arg(_ruleId));
         networkRequest.setHeader(QNetworkRequest::ContentTypeHeader,
@@ -52,7 +53,7 @@ public:
     }
 
     HttpMethod httpMethod() {
-        return HttpMethodDelete;
+        return HttpMethodGet;
     }
 
     QStringList requiredScopes() {

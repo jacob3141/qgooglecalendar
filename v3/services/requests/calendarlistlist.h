@@ -22,40 +22,32 @@
 #pragma once
 
 // Own includes
-#include "request.h"
+#include "requestoperation.h"
 #include "v3/resources/calendar.h"
+#include "v3/resources/aclrule.h"
 #include "v3/services/requestdelegate.h"
 
 namespace APIV3 {
 
-class AclListRequest : public Request {
+class CalendarListList : public RequestOperation {
 public:
-    AclListRequest(RequestDelegate *requestDelegate, QObject *parent = 0)
-        : Request(requestDelegate, parent) {
+    CalendarListList(RequestOperationDelegate *requestDelegate, QObject *parent = 0)
+        : RequestOperation(requestDelegate, parent) {
     }
 
-    void configure(Calendar calendar, int ruleId) {
-        _calendar = calendar;
-        _ruleId = ruleId;
+    void setParameters() {
+        // None
     }
 
     QNetworkRequest networkRequest() {
-
+        return QNetworkRequest();
     }
 
     HttpMethod httpMethod() {
         return HttpMethodGet;
     }
 
-    QStringList requiredScopes() {
-        QStringList scopes;
-        scopes << "https://www.googleapis.com/auth/calendar";
-        return scopes;
-    }
-
 private:
-    Calendar _calendar;
-    int _ruleId;
 };
 
 } // APIV3

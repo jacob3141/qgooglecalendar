@@ -22,36 +22,41 @@
 #pragma once
 
 // Own includes
-#include "request.h"
+#include "requestoperation.h"
 #include "v3/resources/calendar.h"
 #include "v3/resources/aclrule.h"
 #include "v3/services/requestdelegate.h"
 
 namespace APIV3 {
 
-class CalendarListRemoveRequest : public Request {
+class CalendarListDelete : public RequestOperation {
 public:
-    CalendarListRemoveRequest(RequestDelegate *requestDelegate, QObject *parent = 0)
-        : Request(requestDelegate, parent) {
+    CalendarListDelete(RequestOperationDelegate *requestDelegate, QObject *parent = 0)
+        : RequestOperation(requestDelegate, parent) {
     }
 
-    void configure(Calendar calendar, int ruleId) {
-        _calendar = calendar;
-        _ruleId = ruleId;
+    void setParameters(QString calendarId) {
+        _calendarId = calendarId;
     }
 
     QNetworkRequest networkRequest() {
-
+        QNetworkRequest networkRequest;
+        networkRequest.setUrl(QString("%1/users/me/calendarList/%2")
+                              .arg(baseUrl())
+                              .arg(_calendarId));
+        networkRequest.setHeader(QNetworkRequest::ContentTypeHeader,
+                                 "application/x-www-form-urlencoded");
+        networkRequest.setHeader(QNetworkRequest::UserAgentHeader,
+                                 userAgent());
+        return networkRequest;
     }
 
-
     HttpMethod httpMethod() {
-        return HttpMethodPost;
+        return HttpMethodDelete;
     }
 
 private:
-    Calendar _calendar;
-    int _ruleId;
+    QString _calendarId;
 };
 
 } // APIV3

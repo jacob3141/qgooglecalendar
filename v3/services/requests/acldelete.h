@@ -22,33 +22,29 @@
 #pragma once
 
 // Own includes
-#include "request.h"
-#include "v3/resources/aclrule.h"
+#include "requestoperation.h"
+#include "v3/resources/calendar.h"
 #include "v3/services/requestdelegate.h"
-
-// Qt includes
-#include <QJsonDocument>
 
 namespace APIV3 {
 
-/**
- * Implementation of an Acl insert request.
- */
-class AclInsertRequest : public Request {
+class AclDelete : public RequestOperation {
 public:
-    AclInsertRequest(RequestDelegate *requestDelegate, QObject *parent = 0)
-        : Request(requestDelegate, parent) {
+    AclDelete(RequestOperationDelegate *requestDelegate, QObject *parent = 0)
+        : RequestOperation(requestDelegate, parent) {
     }
 
-    void configure(QString calendarId, AclRule rule) {
+    void setParameters(QString calendarId, QString ruleId) {
         _calendarId = calendarId;
-        _rule = rule;
+        _ruleId = ruleId;
     }
 
     QNetworkRequest networkRequest() {
         QNetworkRequest networkRequest;
-        networkRequest.setUrl(QString("https://www.googleapis.com/calendar/v3/calendars/%1/acl")
-                              .arg(_calendarId));
+        networkRequest.setUrl(QString("%1/calendars/%2/acl/%3")
+                              .arg(baseUrl())
+                              .arg(_calendarId)
+                              .arg(_ruleId));
         networkRequest.setHeader(QNetworkRequest::ContentTypeHeader,
                                  "application/x-www-form-urlencoded");
         networkRequest.setHeader(QNetworkRequest::UserAgentHeader,
@@ -56,13 +52,8 @@ public:
         return networkRequest;
     }
 
-    QByteArray bodyData() {
-        QJsonDocument document(_rule.toJsonObject());
-        return document.toJson();
-    }
-
     HttpMethod httpMethod() {
-        return HttpMethodPost;
+        return HttpMethodDelete;
     }
 
     QStringList requiredScopes() {
@@ -73,7 +64,7 @@ public:
 
 private:
     QString _calendarId;
-    AclRule _rule;
+    QString _ruleId;
 };
 
 } // APIV3

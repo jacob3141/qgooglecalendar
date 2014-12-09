@@ -36,6 +36,8 @@ public:
     /** @returns the operation timeout in milliseconds. */
     int operationTimeout();
 
+    QString errorString();
+
 public slots:
     /** Sets the operation timeout in milliseconds. */
     void setOperationTimeout(int timeout);
@@ -43,6 +45,7 @@ public slots:
 protected:
     int _operationTimeout;
     QString _accessToken;
+    QString _errorString;
 };
 
 } // APIV3

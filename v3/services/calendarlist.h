@@ -24,15 +24,15 @@
 // Own includes
 #include "v3/services/service.h"
 #include "v3/resources/calendar.h"
-#include "v3/services/requests/request.h"
+#include "v3/services/requests/requestoperation.h"
 
-#include "requests/calendarlistremoverequest.h"
-#include "requests/calendarlistgetrequest.h"
-#include "requests/calendarlistinsertrequest.h"
-#include "requests/calendarlistlistrequest.h"
-#include "requests/calendarlistpatchrequest.h"
-#include "requests/calendarlistupdaterequest.h"
-#include "requests/calendarlistwatchrequest.h"
+#include "requests/calendarlistdelete.h"
+#include "requests/calendarlistget.h"
+#include "requests/calendarlistinsert.h"
+#include "requests/calendarlistlist.h"
+#include "requests/calendarlistpatch.h"
+#include "requests/calendarlistupdate.h"
+#include "requests/calendarlistwatch.h"
 
 namespace APIV3 {
 
@@ -40,58 +40,94 @@ namespace APIV3 {
  * Service for CalendarList endpoint as specified by Google.
  * @see https://developers.google.com/google-apps/calendar/v3/reference/calendarList
  */
-class CalendarList : public Service, public RequestDelegate
+class CalendarList : public Service, public RequestOperationDelegate
 {
     Q_OBJECT
 public:
     explicit CalendarList(QObject *parent = 0);
 
-public:
-    // Synchronous methods, blocking
-    bool removeSync(Calendar calendar, int ruleId);
-    AclRule getSync(Calendar calendar, int ruleId);
-    int insertSync(Calendar calendar, AclRule rule);
-    // list
-    // patch
-    // update
-    // watch
+    void handleReplyNonBlocking(RequestOperation *request, QNetworkReply *networkReply);
+    void requestTimedOut(RequestOperation *request);
+
+    /**
+     * Blocking methods. These methods will not return immediately.
+     * You can use these if you need to wait for the result sequentially.
+     * Be careful to avoid using these form within your GUI thread, as they may
+     * hang up your visual interface in case the request takes a long time.
+     */
+    bool deleteB(QString calendarId, bool& success);
+    bool getB(QString calendarId, Calendar& calendar);
+    bool insertB(Calendar& calendar);
+    bool listB(QList<Calendar>& list,
+               int maxResults = -1,
+               QString pageToken = "",
+               bool showDeleted = false,
+               QString syncToken = "");
+    bool patchB(QString calendarId, Calendar& calendar);
+    bool updateB(QString calendarId, Calendar& calendar);
+    bool watchB();
 
 public slots:
-    // Asynchronous methods, non-blocking
-    void removeAsync(Calendar calendar, int ruleId);
-    void getAsync(Calendar calendar, int ruleId);
-    void insertAsync(Calendar calendar, AclRule rule);
-    // list
-    // patch
-    // update
-    // watch
+    /**
+     * Non-blocking methods. These will fire the request and return immediately.
+     * Listen for the specific signals to obtain the results.
+     */
+    bool deleteNB(QString calendarId);
+    bool getNB(QString calendarId);
+    bool insertNB(Calendar calendar);
+    bool listNB(int maxResults = -1,
+                QString pageToken = "",
+                bool showDeleted = false,
+                QString syncToken = "");
+    bool patchNB(QString calendarId);
+    bool updateNB(QString calendarId);
+    bool watchNB();
 
 signals:
     void requestTimedOut();
-    void removeFinished(Calendar calendar, int ruleId, bool success);
-    void getFinished(Calendar calendar, AclRule rule);
-    void insertFinished(Calendar calendar, int ruleId);
 
-protected:
-    void handleReply(Request *request, QNetworkReply *networkReply);
-    void requestTimedOut(Request *request);
+    /** If successful, this method returns an empty response body. */
+    void deleteFinished(bool success);
+    /** If successful, this method returns a Calendar resource in the response body. */
+    void getFinished(Calendar calendar);
+    /** If successful, this method returns a Calendar resource in the response body. */
+    void insertFinished(Calendar calendar);
+    /**
+     * If successful, this method returns a response body with a list of calendar
+     * resources and meta data.
+     */
+    void listFinished(QList<Calendar> calendar);
+    /** If successful, this method returns a Calendar resource in the response body. */
+    void patchFinished(Calendar calendar);
+    /** If successful, this method returns a Calendar resource in the response body. */
+    void updateFinished(Calendar calendar);
+    // TODO
+    void watchFinished();
+
+    void deleteFailed(QString errorString);
+    void getFailed(QString errorString);
+    void insertFailed(QString errorString);
+    void listFailed(QString errorString);
+    void patchFailed(QString errorString);
+    void updateFailed(QString errorString);
+    void watchFailed(QString errorString);
 
 private:
-    void handleRemoveReply(QNetworkReply* networkReply);
-    void handleGetReply(QNetworkReply* networkReply);
-    void handleInsertReply(QNetworkReply* networkReply);
-    void handleListReply(QNetworkReply* networkReply);
-    void handlePatchReply(QNetworkReply* networkReply);
-    void handleUpdateReply(QNetworkReply* networkReply);
-    void handleWatchReply(QNetworkReply* networkReply);
+    bool deleteReply(QNetworkReply* networkReply, bool &success);
+    bool getReply(QNetworkReply* networkReply, Calendar &calendar);
+    bool insertReply(QNetworkReply* networkReply, Calendar &calendar);
+    bool listReply(QNetworkReply* networkReply);
+    bool patchReply(QNetworkReply* networkReply, Calendar &calendar);
+    bool updateReply(QNetworkReply* networkReply, Calendar &calendar);
+    bool watchReply(QNetworkReply* networkReply);
 
-    CalendarListRemoveRequest *  _removeRequest;
-    CalendarListGetRequest *     _getRequest;
-    CalendarListInsertRequest *  _insertRequest;
-    CalendarListListRequest *    _listRequest;
-    CalendarListPatchRequest *   _patchRequest;
-    CalendarListUpdateRequest *  _updateRequest;
-    CalendarListWatchRequest *   _watchRequest;
+    CalendarListDelete *  _deleteRequest;
+    CalendarListGet *     _getRequest;
+    CalendarListInsert *  _insertRequest;
+    CalendarListList *    _listRequest;
+    CalendarListPatch *   _patchRequest;
+    CalendarListUpdate *  _updateRequest;
+    CalendarListWatch *   _watchRequest;
 };
 
 } // APIV3

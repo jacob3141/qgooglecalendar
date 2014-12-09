@@ -20,12 +20,15 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // Own includes
-#include "request.h"
+#include "requestoperation.h"
+
+// Qt includes
+#include <QNetworkReply>
 
 namespace APIV3 {
 
-Request::Request(RequestDelegate *requestDelegate,
-                         QObject *parent)
+RequestOperation::RequestOperation(RequestOperationDelegate *requestDelegate,
+                                   QObject *parent)
     : QObject(parent)
 {
     if(!requestDelegate) {
@@ -40,54 +43,17 @@ Request::Request(RequestDelegate *requestDelegate,
     _requestMutex = new QMutex(QMutex::Recursive);
 }
 
-Request::~Request()
+RequestOperation::~RequestOperation()
 {
     delete _requestMutex;
 }
 
-void Request::configureAccessToken(QString accessToken)
+void RequestOperation::setAccessToken(QString accessToken)
 {
     _accessToken = accessToken;
 }
 
-bool Request::performSync(int timeout)
-{
-    bool success = startRequest(timeout);
-    block(timeout);
-    return success;
-}
-
-bool Request::performAsync(int timeout)
-{
-    return startRequest(timeout);
-}
-
-QByteArray Request::bodyData()
-{
-    return "";
-}
-
-Request::HttpMethod Request::httpMethod()
-{
-    return HttpMethodGet;
-}
-
-QString Request::userAgent()
-{
-    return "QGoogleCalender/1.0";
-}
-
-void Request::receivedNetworkReply(QNetworkReply *networkReply)
-{
-    if(_requestDelegate) {
-        _requestDelegate->handleReply(this, networkReply);
-    }
-
-    // Unlock to indicate we're done.
-    _requestMutex->unlock();
-}
-
-bool Request::startRequest(int timeout)
+bool RequestOperation::perform(PerformMode performMode, int timeout)
 {
     // Try locking to ensure that there is no other request pending.
     if(!_requestMutex->tryLock(timeout * 1000)) {
@@ -97,6 +63,8 @@ bool Request::startRequest(int timeout)
         // Do not perform request when another request is pending.
         return false;
     }
+
+    _performMode = performMode;
 
     // Perform request
     switch (httpMethod()) {
@@ -112,22 +80,81 @@ bool Request::startRequest(int timeout)
     case HttpMethodPut:
         _networkAccessManager.put(networkRequest(), bodyData());
         break;
+    case HttpMethodPatch:
+        // TODO
+        //_networkAccessManager.sendCustomRequest(networkRequest(), "PATCH", bodyData());
+        break;
+    }
+
+    if(_performMode == PerformModeBlocking) {
+        // Block on synchronous perform mode.
+        return block(timeout);
     }
     return true;
 }
 
-void Request::block(int timeout)
+QByteArray RequestOperation::bodyData()
+{
+    return "";
+}
+
+RequestOperation::HttpMethod RequestOperation::httpMethod()
+{
+    return HttpMethodGet;
+}
+
+QByteArray RequestOperation::customHttpMethodVerb()
+{
+    return "";
+}
+
+QString RequestOperation::userAgent()
+{
+    return "QGoogleCalender/1.0";
+}
+
+QNetworkReply *RequestOperation::networkReply()
+{
+    return _networkReply;
+}
+
+void RequestOperation::doneProcessingNetworkReply()
+{
+    _networkReply->deleteLater();
+}
+
+QString RequestOperation::baseUrl()
+{
+    return "https://www.googleapis.com/calendar/v3";
+}
+
+void RequestOperation::receivedNetworkReply(QNetworkReply *networkReply)
+{
+    _networkReply = networkReply;
+    if(_performMode == PerformModeNonBlocking) {
+        if(_requestDelegate) {
+            _requestDelegate->handleReplyNonBlocking(this, networkReply);
+        }
+    }
+
+    // Unlock to indicate we're done.
+    _requestMutex->unlock();
+}
+
+bool RequestOperation::block(int timeout)
 {
     // Try locking the transaction mutex to probe if it has been unlocked.
     if(_requestMutex->tryLock(timeout * 1000)) {
         // After locking it successfully we can be sure the previous operation
         // has been completed, so now let's unlock it again.
         _requestMutex->unlock();
+        return true;
     } else {
         // If we were not able to lock at all, something went wrong.
         if(_requestDelegate) {
             _requestDelegate->requestTimedOut(this);
         }
+        return false;
     }
 }
 

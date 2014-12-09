@@ -35,37 +35,51 @@ namespace APIV3 {
 /**
  *
  */
-class Request : public QObject
+class RequestOperation : public QObject
 {
     Q_OBJECT
-    friend class RequestDelegate;
+    friend class RequestOperationDelegate;
 public:
+    /**
+     * The HTTP method.
+     */
     enum HttpMethod {
         HttpMethodGet,
         HttpMethodPost,
         HttpMethodDelete,
-        HttpMethodPut
+        HttpMethodPut,
+        HttpMethodPatch,
+        HttpMethodCustom
     };
 
-    Request(RequestDelegate *requestDelegate, QObject *parent = 0);
-    virtual ~Request();
-
-    void configureAccessToken(QString accessToken);
+    /**
+     * The perform mode.
+     */
+    enum PerformMode {
+        /** Blocking. This block execution in the current thread. */
+        PerformModeBlocking,
+        /** Non-blocking. This returns immediately to the current thread. */
+        PerformModeNonBlocking
+    };
 
     /**
-     * Performs a transaction synchronously, ie. the executing thread will be
-     * blocked until a reply has been received.
-     * @param timeout The maximum time in seconds after the operation times out.
-     * @returns true, if the transaction could be initiated, false otherwise.
+     * Creates a new request.
+     * @param requestDelegate
+     * @param parent
      */
-    bool performSync(int timeout = 30);
+    RequestOperation(RequestOperationDelegate *requestDelegate, QObject *parent = 0);
+    virtual ~RequestOperation();
+
+    /** Configure this request to work this authorization token. */
+    void setAccessToken(QString accessToken);
 
     /**
-     * Performs a transaction asychronously, ie. the executing thread will not
-     * be blocked.
-     * @returns true, if the transaction could be initiated, false otherwise.
+     * Performs this request in the specified perform mode.
+     * @param performMode Whether this request is blocking or non-blocking.
+     * @param timeout The maximum time this request may take.
+     * @returns true, if the request could be performed.
      */
-    bool performAsync(int timeout = 30);
+    bool perform(PerformMode performMode = PerformModeBlocking, int timeout = 30);
 
     /**
      * Supposed to supply the transaction with a network request.
@@ -73,6 +87,11 @@ public:
      */
     virtual QNetworkRequest networkRequest() = 0;
 
+    /**
+     * Override this to define the body data. Please be aware that not all
+     * methods may have a request body.
+     * @returns the request body.
+     */
     virtual QByteArray bodyData();
 
     /**
@@ -80,6 +99,12 @@ public:
      * @returns the http method.
      */
     virtual HttpMethod httpMethod() = 0;
+
+    /**
+     * When httpMethod is HttpCustom, implement this to return you custom
+     * method verb.
+     */
+    virtual QByteArray customHttpMethodVerb();
 
     /**
      * Supposed to return a list of required authorization scopes for this
@@ -91,6 +116,19 @@ public:
 
     /** @returns the user agent to be used with this request. */
     virtual QString userAgent();
+
+    /**
+     * @returns the network reply that's available after receivedNetworkReply
+     * has been called. Call doneProcessingNetworkReply when you're finished
+     * to avoid memory leaks.
+     */
+    QNetworkReply *networkReply();
+
+    /** Call this when you're finished processing the network reply. */
+    void doneProcessingNetworkReply();
+
+    /** @returns the default API base url. */
+    virtual QString baseUrl();
 
 private slots:
     /**
@@ -104,20 +142,26 @@ protected:
 
 private:
     /**
-     * @brief startTransaction
-     * @param timeout
-     * @return
+     * Blocks execution for the specified maximum time.
+     * @returns true, if the current requests completes in less time than
+     * timout. Returns false, if the request timed out.
      */
-    bool startRequest(int timeout);
+    bool block(int timeout);
 
-    /**
-     * @brief block
-     */
-    void block(int timeout);
+    /** The request delegate object. */
+    RequestOperationDelegate *_requestDelegate;
 
-    RequestDelegate *_requestDelegate;
+    /** The network access manager. */
     QNetworkAccessManager _networkAccessManager;
+
+    /** Recursive request mutex. This is locked when a request is pending. */
     QMutex *_requestMutex;
+
+    /** Current perform mode of the request, ie. blocking or non-blocking. */
+    PerformMode _performMode;
+
+    /** The last network reply this request has received. */
+    QNetworkReply *_networkReply;
 };
 
 } // APIV3

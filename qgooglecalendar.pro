@@ -45,22 +45,22 @@ HEADERS += \
     v3/resources/color.h \
     v3/resources/event.h \
     v3/services/service.h \
-    v3/services/requests/request.h \
-    v3/services/requests/aclremoverequest.h \
     v3/services/requestdelegate.h \
-    v3/services/requests/aclgetrequest.h \
-    v3/services/requests/aclinsertrequest.h \
-    v3/services/requests/acllistrequest.h \
-    v3/services/requests/aclpatchrequest.h \
-    v3/services/requests/aclupdaterequest.h \
-    v3/services/requests/aclwatchrequest.h \
-    v3/services/requests/calendarlistremoverequest.h \
-    v3/services/requests/calendarlistgetrequest.h \
-    v3/services/requests/calendarlistinsertrequest.h \
-    v3/services/requests/calendarlistlistrequest.h \
-    v3/services/requests/calendarlistpatchrequest.h \
-    v3/services/requests/calendarlistupdaterequest.h \
-    v3/services/requests/calendarlistwatchrequest.h
+    v3/services/requests/requestoperation.h \
+    v3/services/requests/aclget.h \
+    v3/services/requests/aclinsert.h \
+    v3/services/requests/acllist.h \
+    v3/services/requests/aclpatch.h \
+    v3/services/requests/aclupdate.h \
+    v3/services/requests/aclwatch.h \
+    v3/services/requests/calendarlistget.h \
+    v3/services/requests/calendarlistinsert.h \
+    v3/services/requests/calendarlistlist.h \
+    v3/services/requests/calendarlistpatch.h \
+    v3/services/requests/calendarlistupdate.h \
+    v3/services/requests/calendarlistwatch.h \
+    v3/services/requests/acldelete.h \
+    v3/services/requests/calendarlistdelete.h
 
 SOURCES += \
     googlecalendarservice.cpp \
@@ -79,5 +79,5 @@ SOURCES += \
     v3/resources/color.cpp \
     v3/resources/event.cpp \
     v3/services/service.cpp \
-    v3/services/requests/request.cpp
+    v3/services/requests/requestoperation.cpp
 

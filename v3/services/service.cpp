@@ -34,6 +34,11 @@ int Service::operationTimeout()
     return _operationTimeout;
 }
 
+QString Service::errorString()
+{
+    return _errorString;
+}
+
 void Service::setOperationTimeout(int timeout)
 {
     _operationTimeout = timeout;

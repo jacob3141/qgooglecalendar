@@ -22,33 +22,59 @@
 #pragma once
 
 // Own includes
-#include "request.h"
-#include "v3/resources/calendar.h"
+#include "requestoperation.h"
 #include "v3/resources/aclrule.h"
 #include "v3/services/requestdelegate.h"
 
+// Qt includes
+#include <QJsonDocument>
+
 namespace APIV3 {
 
-class CalendarListGetRequest : public Request {
+/**
+ * Implementation of an Acl insert request.
+ */
+class AclInsert : public RequestOperation {
 public:
-    CalendarListGetRequest(RequestDelegate *requestDelegate, QObject *parent = 0)
-        : Request(requestDelegate, parent) {
+    AclInsert(RequestOperationDelegate *requestDelegate, QObject *parent = 0)
+        : RequestOperation(requestDelegate, parent) {
     }
 
-    void configure(QString calendarId) {
+    void setParameters(QString calendarId, AclRule rule) {
         _calendarId = calendarId;
+        _rule = rule;
     }
 
     QNetworkRequest networkRequest() {
+        QNetworkRequest networkRequest;
+        networkRequest.setUrl(QString("%1/calendars/%2/acl")
+                              .arg(baseUrl())
+                              .arg(_calendarId));
+        networkRequest.setHeader(QNetworkRequest::ContentTypeHeader,
+                                 "application/x-www-form-urlencoded");
+        networkRequest.setHeader(QNetworkRequest::UserAgentHeader,
+                                 userAgent());
+        return networkRequest;
+    }
 
+    QByteArray bodyData() {
+        QJsonDocument document(_rule.toJsonObject());
+        return document.toJson();
     }
 
     HttpMethod httpMethod() {
-        return HttpMethodGet;
+        return HttpMethodPost;
+    }
+
+    QStringList requiredScopes() {
+        QStringList scopes;
+        scopes << "https://www.googleapis.com/auth/calendar";
+        return scopes;
     }
 
 private:
     QString _calendarId;
+    AclRule _rule;
 };
 
 } // APIV3

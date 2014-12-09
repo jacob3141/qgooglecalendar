@@ -21,15 +21,23 @@
 
 #pragma once
 
+// Qt includes
+#include <QNetworkReply>
+
 namespace APIV3 {
 
-class Request;
-class QNetworkReply;
-class RequestDelegate {
+class RequestOperation;
+class RequestOperationDelegate {
 public:
-    virtual void handleReply(Request *request,
+    /**
+     * This will be called when a request in non-blocking mode has fired.
+     * @attention You are supposed to delete the network reply when done.
+     * @param request The request object.
+     * @param networkReply The corresponding network reply.
+     */
+    virtual void handleReplyNonBlocking(RequestOperation *request,
                              QNetworkReply *networkReply) = 0;
-    virtual void requestTimedOut(Request *request) = 0;
+    virtual void requestTimedOut(RequestOperation *request) = 0;
 };
 
 } // APIV3

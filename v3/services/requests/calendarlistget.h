@@ -22,40 +22,41 @@
 #pragma once
 
 // Own includes
-#include "request.h"
+#include "requestoperation.h"
 #include "v3/resources/calendar.h"
+#include "v3/resources/aclrule.h"
 #include "v3/services/requestdelegate.h"
 
 namespace APIV3 {
 
-class AclUpdateRequest : public Request {
+class CalendarListGet : public RequestOperation {
 public:
-    AclUpdateRequest(RequestDelegate *requestDelegate, QObject *parent = 0)
-        : Request(requestDelegate, parent) {
+    CalendarListGet(RequestOperationDelegate *requestDelegate, QObject *parent = 0)
+        : RequestOperation(requestDelegate, parent) {
     }
 
-    void configure(Calendar calendar, int ruleId) {
-        _calendar = calendar;
-        _ruleId = ruleId;
+    void setParameters(QString calendarId) {
+        _calendarId = calendarId;
     }
 
     QNetworkRequest networkRequest() {
-
+        QNetworkRequest networkRequest;
+        networkRequest.setUrl(QString("%1/users/me/calendarList/%2")
+                              .arg(baseUrl())
+                              .arg(_calendarId));
+        networkRequest.setHeader(QNetworkRequest::ContentTypeHeader,
+                                 "application/x-www-form-urlencoded");
+        networkRequest.setHeader(QNetworkRequest::UserAgentHeader,
+                                 userAgent());
+        return networkRequest;
     }
 
     HttpMethod httpMethod() {
         return HttpMethodGet;
     }
 
-    QStringList requiredScopes() {
-        QStringList scopes;
-        scopes << "https://www.googleapis.com/auth/calendar";
-        return scopes;
-    }
-
 private:
-    Calendar _calendar;
-    int _ruleId;
+    QString _calendarId;
 };
 
 } // APIV3

@@ -22,35 +22,51 @@
 #pragma once
 
 // Own includes
-#include "request.h"
+#include "requestoperation.h"
 #include "v3/resources/calendar.h"
 #include "v3/resources/aclrule.h"
 #include "v3/services/requestdelegate.h"
 
+// Qt includes
+#include <QJsonDocument>
+
 namespace APIV3 {
 
-class CalendarListUpdateRequest : public Request {
+class CalendarListPatch : public RequestOperation {
 public:
-    CalendarListUpdateRequest(RequestDelegate *requestDelegate, QObject *parent = 0)
-        : Request(requestDelegate, parent) {
+    CalendarListPatch(RequestOperationDelegate *requestDelegate, QObject *parent = 0)
+        : RequestOperation(requestDelegate, parent) {
     }
 
-    void configure(Calendar calendar, int ruleId) {
+    void setParameters(QString calendarId, Calendar calendar) {
+        _calendarId = calendarId;
         _calendar = calendar;
-        _ruleId = ruleId;
     }
 
     QNetworkRequest networkRequest() {
+        QNetworkRequest networkRequest;
+        networkRequest.setUrl(QString("%1/users/me/calendarList/%1")
+                              .arg(baseUrl())
+                              .arg(_calendarId));
+        networkRequest.setHeader(QNetworkRequest::ContentTypeHeader,
+                                 "application/x-www-form-urlencoded");
+        networkRequest.setHeader(QNetworkRequest::UserAgentHeader,
+                                 userAgent());
+        return networkRequest;
+    }
 
+    QByteArray bodyData() {
+        QJsonDocument document(_calendar.toJsonObject());
+        return document.toJson();
     }
 
     HttpMethod httpMethod() {
-        return HttpMethodGet;
+        return HttpMethodPatch;
     }
 
 private:
+    QString _calendarId;
     Calendar _calendar;
-    int _ruleId;
 };
 
 } // APIV3
