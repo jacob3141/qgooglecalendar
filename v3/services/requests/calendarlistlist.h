@@ -24,7 +24,6 @@
 // Own includes
 #include "requestoperation.h"
 #include "v3/resources/calendar.h"
-#include "v3/resources/aclrule.h"
 #include "v3/services/requestdelegate.h"
 
 namespace APIV3 {
@@ -45,6 +44,12 @@ public:
 
     HttpMethod httpMethod() {
         return HttpMethodGet;
+    }
+
+    QStringList requiredScopes() {
+        QStringList scopes;
+        scopes << "https://www.googleapis.com/auth/calendar";
+        return scopes;
     }
 
 private:

@@ -23,7 +23,6 @@
 
 // Own includes
 #include "requestoperation.h"
-#include "v3/resources/calendar.h"
 #include "v3/services/requestdelegate.h"
 
 namespace APIV3 {

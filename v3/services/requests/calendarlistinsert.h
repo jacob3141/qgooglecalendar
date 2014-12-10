@@ -23,8 +23,7 @@
 
 // Own includes
 #include "requestoperation.h"
-#include "v3/resources/calendar.h"
-#include "v3/resources/aclrule.h"
+#include "v3/resources/calendarlistentry.h"
 #include "v3/services/requestdelegate.h"
 
 // Qt includes
@@ -38,8 +37,8 @@ public:
         : RequestOperation(requestDelegate, parent) {
     }
 
-    void setParameters(Calendar calendar) {
-        _calendar = calendar;
+    void setParameters(CalendarListEntry calendarListEntry) {
+        _calendarListEntry = calendarListEntry;
     }
 
     QNetworkRequest networkRequest() {
@@ -54,7 +53,7 @@ public:
     }
 
     QByteArray bodyData() {
-        QJsonDocument document(_calendar.toJsonObject());
+        QJsonDocument document(_calendarListEntry.toJsonObject());
         return document.toJson();
     }
 
@@ -62,8 +61,14 @@ public:
         return HttpMethodPost;
     }
 
+    QStringList requiredScopes() {
+        QStringList scopes;
+        scopes << "https://www.googleapis.com/auth/calendar";
+        return scopes;
+    }
+
 private:
-    Calendar _calendar;
+    CalendarListEntry _calendarListEntry;
 };
 
 } // APIV3

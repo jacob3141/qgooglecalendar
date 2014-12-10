@@ -24,6 +24,8 @@
 // Own includes
 #include "v3/services/service.h"
 
+#include "v3/services/colors.h"
+
 namespace APIV3 {
 
 class Colors : public Service

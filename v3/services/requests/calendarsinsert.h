@@ -22,22 +22,54 @@
 #pragma once
 
 // Own includes
-#include "v3/services/service.h"
+#include "requestoperation.h"
+#include "v3/resources/calendar.h"
+#include "v3/services/requestdelegate.h"
 
-#include "v3/services/requests/freebusyquery.h"
+// Qt includes
+#include <QJsonDocument>
 
 namespace APIV3 {
 
-class Freebusy : public Service
-{
-    Q_OBJECT
+class CalendarsInsert : public RequestOperation {
 public:
-    explicit Freebusy(QObject *parent = 0);
+    CalendarsInsert(RequestOperationDelegate *requestDelegate, QObject *parent = 0)
+        : RequestOperation(requestDelegate, parent) {
+    }
 
-signals:
+    void setParameters(Calendar calendar) {
+        _calendar = calendar;
+    }
 
-public slots:
+    QNetworkRequest networkRequest() {
+        QNetworkRequest networkRequest;
+        networkRequest.setUrl(QString("%1/calendars")
+                              .arg(baseUrl()));
+        networkRequest.setHeader(QNetworkRequest::ContentTypeHeader,
+                                 "application/x-www-form-urlencoded");
+        networkRequest.setHeader(QNetworkRequest::UserAgentHeader,
+                                 userAgent());
+        return networkRequest;
+    }
 
+    QByteArray bodyData() {
+        QJsonDocument document(_calendar.toJsonObject());
+        return document.toJson();
+    }
+
+    HttpMethod httpMethod() {
+        return HttpMethodPost;
+    }
+
+    QStringList requiredScopes() {
+        QStringList scopes;
+        scopes << "https://www.googleapis.com/auth/calendar.readonly"
+               << "https://www.googleapis.com/auth/calendar";
+        return scopes;
+    }
+
+private:
+    Calendar _calendar;
 };
 
 } // APIV3

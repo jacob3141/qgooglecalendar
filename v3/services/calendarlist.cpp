@@ -31,6 +31,13 @@ CalendarList::CalendarList(QObject *parent) :
     Service(parent),
     RequestOperationDelegate()
 {
+    _delete = new CalendarListDelete(this, parent);
+    _get    = new CalendarListGet   (this, parent);
+    _insert = new CalendarListInsert(this, parent);
+    _list   = new CalendarListList  (this, parent);
+    _patch  = new CalendarListPatch (this, parent);
+    _update = new CalendarListUpdate(this, parent);
+    _watch  = new CalendarListWatch (this, parent);
 }
 
 
@@ -39,50 +46,49 @@ void CalendarList::handleReplyNonBlocking(RequestOperation *request, QNetworkRep
     // Schedule network reply for deletion
     networkReply->deleteLater();
 
-    if(request == _deleteRequest) {
-        bool success;
-        if(deleteReply(networkReply, success)) {
-            emit deleteFinished(success);
+    if(request == _delete) {
+        if(deleteReply(networkReply)) {
+            emit deleteFinished();
         } else {
             emit deleteFailed(errorString());
         }
     } else
-    if(request == _getRequest) {
-        Calendar calendar;
-        if(getReply(networkReply, calendar)) {
-            emit getFinished(calendar);
+    if(request == _get) {
+        CalendarListEntry calendarListEntry;
+        if(getReply(networkReply, calendarListEntry)) {
+            emit getFinished(calendarListEntry);
         } else {
             emit getFailed(errorString());
         }
     } else
-    if(request == _insertRequest) {
-        Calendar calendar;
-        if(insertReply(networkReply, calendar)) {
-            emit insertFinished(calendar);
+    if(request == _insert) {
+        CalendarListEntry calendarListEntry;
+        if(insertReply(networkReply, calendarListEntry)) {
+            emit insertFinished(calendarListEntry);
         } else {
             emit insertFailed(errorString());
         }
     } else
-    if(request == _listRequest) {
+    if(request == _list) {
         // TODO: Implement.
     } else
-    if(request == _patchRequest) {
-        Calendar calendar;
-        if(patchReply(networkReply, calendar)) {
-            emit patchFinished(calendar);
+    if(request == _patch) {
+        CalendarListEntry calendarListEntry;
+        if(patchReply(networkReply, calendarListEntry)) {
+            emit patchFinished(calendarListEntry);
         } else {
             emit patchFailed(errorString());
         }
     } else
-    if(request == _updateRequest) {
-        Calendar calendar;
-        if(updateReply(networkReply, calendar)) {
-            emit updateFinished(calendar);
+    if(request == _update) {
+        CalendarListEntry calendarListEntry;
+        if(updateReply(networkReply, calendarListEntry)) {
+            emit updateFinished(calendarListEntry);
         } else {
             emit updateFailed(errorString());
         }
     } else
-    if(request == _watchRequest) {
+    if(request == _watch) {
         // TODO: Implement.
     } else {
         qDebug() << "Warning: Received response for unknown request.";
@@ -96,35 +102,35 @@ void CalendarList::requestTimedOut(RequestOperation *request)
 
 bool CalendarList::deleteB(QString calendarId, bool& success)
 {
-    _deleteRequest->setAccessToken(_accessToken);
-    _deleteRequest->setParameters(calendarId);
-    if(_deleteRequest->perform(RequestOperation::PerformModeBlocking, _operationTimeout)) {
-        return deleteReply(_deleteRequest->networkReply(), success);
+    _delete->setAccessToken(_accessToken);
+    _delete->setParameters(calendarId);
+    if(_delete->perform(RequestOperation::PerformModeBlocking, _operationTimeout)) {
+        return deleteReply(_delete->networkReply());
     }
     return false;
 }
 
-bool CalendarList::getB(QString calendarId, Calendar& calendar)
+bool CalendarList::getB(QString calendarId, CalendarListEntry &calendarListEntry)
 {
-    _getRequest->setAccessToken(_accessToken);
-    _getRequest->setParameters(calendarId);
-    if(_getRequest->perform(RequestOperation::PerformModeBlocking, _operationTimeout)) {
-        return getReply(_getRequest->networkReply(), calendar);
+    _get->setAccessToken(_accessToken);
+    _get->setParameters(calendarId);
+    if(_get->perform(RequestOperation::PerformModeBlocking, _operationTimeout)) {
+        return getReply(_get->networkReply(), calendarListEntry);
     }
     return false;
 }
 
-bool CalendarList::insertB(Calendar& calendar)
+bool CalendarList::insertB(CalendarListEntry &calendarListEntry)
 {
-    _insertRequest->setAccessToken(_accessToken);
-    _insertRequest->setParameters(calendar);
-    if(_insertRequest->perform(RequestOperation::PerformModeBlocking, _operationTimeout)) {
-        return insertReply(_insertRequest->networkReply(), calendar);
+    _insert->setAccessToken(_accessToken);
+    _insert->setParameters(calendarListEntry);
+    if(_insert->perform(RequestOperation::PerformModeBlocking, _operationTimeout)) {
+        return insertReply(_insert->networkReply(), calendarListEntry);
     }
     return false;
 }
 
-bool CalendarList::listB(QList<Calendar>& list,
+bool CalendarList::listB(QList<CalendarListEntry>& list,
                          int maxResults,
                          QString pageToken,
                          bool showDeleted,
@@ -139,22 +145,22 @@ bool CalendarList::listB(QList<Calendar>& list,
     return false;
 }
 
-bool CalendarList::patchB(QString calendarId, Calendar& calendar)
+bool CalendarList::patchB(QString calendarId, CalendarListEntry &calendarListEntry)
 {
-    _patchRequest->setAccessToken(_accessToken);
-    _patchRequest->setParameters(calendarId, calendar);
-    if(_patchRequest->perform(RequestOperation::PerformModeBlocking, _operationTimeout)) {
-        return patchReply(_patchRequest->networkReply(), calendar);
+    _patch->setAccessToken(_accessToken);
+    _patch->setParameters(calendarId, calendarListEntry);
+    if(_patch->perform(RequestOperation::PerformModeBlocking, _operationTimeout)) {
+        return patchReply(_patch->networkReply(), calendarListEntry);
     }
     return false;
 }
 
-bool CalendarList::updateB(QString calendarId, Calendar& calendar)
+bool CalendarList::updateB(QString calendarId, CalendarListEntry &calendarListEntry)
 {
-    _updateRequest->setAccessToken(_accessToken);
-    _updateRequest->setParameters(calendarId, calendar);
-    if(_updateRequest->perform(RequestOperation::PerformModeBlocking, _operationTimeout)) {
-        return updateReply(_updateRequest->networkReply(), calendar);
+    _update->setAccessToken(_accessToken);
+    _update->setParameters(calendarId, calendarListEntry);
+    if(_update->perform(RequestOperation::PerformModeBlocking, _operationTimeout)) {
+        return updateReply(_update->networkReply(), calendarListEntry);
     }
     return false;
 }
@@ -167,23 +173,23 @@ bool CalendarList::watchB()
 
 bool CalendarList::deleteNB(QString calendarId)
 {
-    _deleteRequest->setAccessToken(_accessToken);
-    _deleteRequest->setParameters(calendarId);
-    return _deleteRequest->perform(RequestOperation::PerformModeNonBlocking, _operationTimeout);
+    _delete->setAccessToken(_accessToken);
+    _delete->setParameters(calendarId);
+    return _delete->perform(RequestOperation::PerformModeNonBlocking, _operationTimeout);
 }
 
 bool CalendarList::getNB(QString calendarId)
 {
-    _getRequest->setAccessToken(_accessToken);
-    _getRequest->setParameters(calendarId);
-    _getRequest->perform(RequestOperation::PerformModeNonBlocking, _operationTimeout);
+    _get->setAccessToken(_accessToken);
+    _get->setParameters(calendarId);
+    return _get->perform(RequestOperation::PerformModeNonBlocking, _operationTimeout);
 }
 
-bool CalendarList::insertNB(Calendar calendar)
+bool CalendarList::insertNB(CalendarListEntry calendarListEntry)
 {
-    _insertRequest->setAccessToken(_accessToken);
-    _insertRequest->setParameters(calendar);
-    _insertRequest->perform(RequestOperation::PerformModeNonBlocking, _operationTimeout);
+    _insert->setAccessToken(_accessToken);
+    _insert->setParameters(calendarListEntry);
+    return _insert->perform(RequestOperation::PerformModeNonBlocking, _operationTimeout);
 }
 
 bool CalendarList::listNB(int maxResults,
@@ -200,54 +206,85 @@ bool CalendarList::listNB(int maxResults,
     return false;
 }
 
-bool CalendarList::patchNB(QString calendarId)
+bool CalendarList::patchNB(QString calendarId, CalendarListEntry calendarListEntry)
 {
-
+    _patch->setAccessToken(_accessToken);
+    _patch->setParameters(calendarId, calendarListEntry);
+    return _patch->perform(RequestOperation::PerformModeNonBlocking, _operationTimeout);
 }
 
-bool CalendarList::updateNB(QString calendarId)
+bool CalendarList::updateNB(QString calendarId, CalendarListEntry calendarListEntry)
 {
-
+    _patch->setAccessToken(_accessToken);
+    _patch->setParameters(calendarId, calendarListEntry);
+    return _patch->perform(RequestOperation::PerformModeNonBlocking, _operationTimeout);
 }
 
 bool CalendarList::watchNB()
 {
-
+    // TODO: Implement.
+    return false;
 }
 
-bool CalendarList::deleteReply(QNetworkReply* networkReply, bool& success)
+bool CalendarList::deleteReply(QNetworkReply* networkReply)
 {
-
+    if(networkReply->error() == QNetworkReply::NoError) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
-bool CalendarList::getReply(QNetworkReply* networkReply, Calendar& calendar)
+bool CalendarList::getReply(QNetworkReply* networkReply, CalendarListEntry& calendarListEntry)
 {
-
+    return decodeCalendarListFromReply(networkReply, calendarListEntry);
 }
 
-bool CalendarList::insertReply(QNetworkReply* networkReply, Calendar& calendar)
+bool CalendarList::insertReply(QNetworkReply* networkReply, CalendarListEntry &calendarListEntry)
 {
-
+    return decodeCalendarListFromReply(networkReply, calendarListEntry);
 }
 
 bool CalendarList::listReply(QNetworkReply* networkReply)
 {
-
+    // TODO: Implement.
+    return false;
 }
 
-bool CalendarList::patchReply(QNetworkReply* networkReply, Calendar& calendar)
+bool CalendarList::patchReply(QNetworkReply* networkReply, CalendarListEntry &calendarListEntry)
 {
-
+    return decodeCalendarListFromReply(networkReply, calendarListEntry);
 }
 
-bool CalendarList::updateReply(QNetworkReply* networkReply, Calendar& calendar)
+bool CalendarList::updateReply(QNetworkReply* networkReply, CalendarListEntry& calendarListEntry)
 {
-
+    return decodeCalendarListFromReply(networkReply, calendarListEntry);
 }
 
 bool CalendarList::watchReply(QNetworkReply* networkReply)
 {
-
+    // TODO: Implement.
+    return false;
 }
+
+bool CalendarList::decodeCalendarListFromReply(QNetworkReply* networkReply, CalendarListEntry &calendarListEntry)
+{
+    // Check if any network errors occured.
+    if(networkReply->error() == QNetworkReply::NoError) {
+        // Parse reply
+        QJsonDocument replyDocument = QJsonDocument::fromJson(networkReply->readAll());
+        if(calendarListEntry.fromJson(replyDocument.object())) {
+            _errorString = "";
+            return true;
+        } else {
+            _errorString = tr("Failed to decode calendar list from json.");
+            return false;
+        }
+    } else {
+        _errorString = networkReply->errorString();
+        return false;
+    }
+}
+
 
 } // APIV3

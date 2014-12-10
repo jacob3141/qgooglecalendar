@@ -24,6 +24,18 @@
 // Own includes
 #include "v3/services/service.h"
 
+#include "v3/services/requests/eventsdelete.h"
+#include "v3/services/requests/eventsget.h"
+#include "v3/services/requests/eventsimport.h"
+#include "v3/services/requests/eventsinsert.h"
+#include "v3/services/requests/eventsinstances.h"
+#include "v3/services/requests/eventslist.h"
+#include "v3/services/requests/eventsmove.h"
+#include "v3/services/requests/eventspatch.h"
+#include "v3/services/requests/eventsquickadd.h"
+#include "v3/services/requests/eventsupdate.h"
+#include "v3/services/requests/eventswatch.h"
+
 namespace APIV3 {
 
 class Events : public Service

@@ -94,7 +94,7 @@ signals:
     void requestTimedOut();
 
     /** If successful, this method returns an empty response body. */
-    void deleteFinished(bool success);
+    void deleteFinished();
     /** If successful, this method returns an Acl resource in the response body. */
     void getFinished(AclRule rule);
     /** If successful, this method returns an Acl resource in the response body. */
@@ -120,7 +120,7 @@ signals:
     void watchFailed(QString errorString);
 
 private:
-    bool deleteReply(QNetworkReply *networkReply, bool& success);
+    bool deleteReply(QNetworkReply *networkReply);
     bool getReply(QNetworkReply *networkReply, AclRule& rule);
     bool insertReply(QNetworkReply *networkReply, AclRule& rule);
     // list
@@ -128,13 +128,15 @@ private:
     bool updateReply(QNetworkReply *networkReply, AclRule& rule);
     // watch
 
-    AclDelete *  _deleteRequest;
-    AclGet *     _getRequest;
-    AclInsert *  _insertRequest;
-    AclList *    _listRequest;
-    AclPatch *   _patchRequest;
-    AclUpdate *  _updateRequest;
-    AclWatch *   _watchRequest;
+    bool decodeRuleFromReply(QNetworkReply *networkReply, AclRule& rule);
+
+    AclDelete *  _delete;
+    AclGet *     _get;
+    AclInsert *  _insert;
+    AclList *    _list;
+    AclPatch *   _patch;
+    AclUpdate *  _update;
+    AclWatch *   _watch;
 };
 
 } // APIV3

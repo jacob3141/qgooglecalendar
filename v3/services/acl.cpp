@@ -31,41 +31,41 @@ Acl::Acl(QObject *parent) :
     Service(parent),
     RequestOperationDelegate()
 {
-    _deleteRequest  = new AclDelete(this, parent);
-    _getRequest     = new AclGet(this, parent);
-    _insertRequest  = new AclInsert(this, parent);
-    _listRequest    = new AclList(this, parent);
-    _patchRequest   = new AclPatch(this, parent);
-    _updateRequest  = new AclUpdate(this, parent);
-    _watchRequest   = new AclWatch(this, parent);
+    _delete  = new AclDelete(this, parent);
+    _get     = new AclGet   (this, parent);
+    _insert  = new AclInsert(this, parent);
+    _list    = new AclList  (this, parent);
+    _patch   = new AclPatch (this, parent);
+    _update  = new AclUpdate(this, parent);
+    _watch   = new AclWatch (this, parent);
 }
 
 bool Acl::deleteB(QString calendarId, QString ruleId, bool& success)
 {
-    _deleteRequest->setAccessToken(_accessToken);
-    _deleteRequest->setParameters(calendarId, ruleId);
-    if(_deleteRequest->perform(RequestOperation::PerformModeBlocking, _operationTimeout)) {
-        return deleteReply(_deleteRequest->networkReply(), success);
+    _delete->setAccessToken(_accessToken);
+    _delete->setParameters(calendarId, ruleId);
+    if(_delete->perform(RequestOperation::PerformModeBlocking, _operationTimeout)) {
+        return deleteReply(_delete->networkReply());
     }
     return false;
 }
 
 bool Acl::getB(QString calendarId, QString ruleId, AclRule& rule)
 {
-    _getRequest->setAccessToken(_accessToken);
-    _getRequest->setParameters(calendarId, ruleId);
-    if(_getRequest->perform(RequestOperation::PerformModeBlocking, _operationTimeout)) {
-        return getReply(_getRequest->networkReply(), rule);
+    _get->setAccessToken(_accessToken);
+    _get->setParameters(calendarId, ruleId);
+    if(_get->perform(RequestOperation::PerformModeBlocking, _operationTimeout)) {
+        return getReply(_get->networkReply(), rule);
     }
     return false;
 }
 
 bool Acl::insertB(QString calendarId, AclRule &rule)
 {
-    _insertRequest->setAccessToken(_accessToken);
-    _insertRequest->setParameters(calendarId, rule);
-    if(_insertRequest->perform(RequestOperation::PerformModeBlocking, _operationTimeout)) {
-        return insertReply(_insertRequest->networkReply(), rule);
+    _insert->setAccessToken(_accessToken);
+    _insert->setParameters(calendarId, rule);
+    if(_insert->perform(RequestOperation::PerformModeBlocking, _operationTimeout)) {
+        return insertReply(_insert->networkReply(), rule);
     }
     return false;
 }
@@ -77,13 +77,13 @@ bool Acl::listB(QString calendarId,
                    bool showDeleted,
                    QString syncToken)
 {
-    _listRequest->setAccessToken(_accessToken);
-    _listRequest->setParameters(calendarId,
+    _list->setAccessToken(_accessToken);
+    _list->setParameters(calendarId,
                             maxResults,
                             pageToken,
                             showDeleted,
                             syncToken);
-    if(_listRequest->perform(RequestOperation::PerformModeBlocking, _operationTimeout)) {
+    if(_list->perform(RequestOperation::PerformModeBlocking, _operationTimeout)) {
         return false;
     }
     return false;
@@ -93,11 +93,11 @@ bool Acl::patchB(QString calendarId,
                  QString ruleId,
                  AclRule& rule)
 {
-    _getRequest->setAccessToken(_accessToken);
-    _getRequest->setParameters(calendarId,
+    _get->setAccessToken(_accessToken);
+    _get->setParameters(calendarId,
                                ruleId);
-    if(_getRequest->perform(RequestOperation::PerformModeBlocking, _operationTimeout)) {
-        return patchReply(_patchRequest->networkReply(), rule);
+    if(_get->perform(RequestOperation::PerformModeBlocking, _operationTimeout)) {
+        return patchReply(_patch->networkReply(), rule);
     }
     return false;
 }
@@ -106,11 +106,11 @@ bool Acl::updateB(QString calendarId,
                   QString ruleId,
                   AclRule& rule)
 {
-    _updateRequest->setAccessToken(_accessToken);
-    _updateRequest->setParameters(calendarId,
+    _update->setAccessToken(_accessToken);
+    _update->setParameters(calendarId,
                                   ruleId);
-    if(_updateRequest->perform(RequestOperation::PerformModeBlocking, _operationTimeout)) {
-        return updateReply(_updateRequest->networkReply(), rule);
+    if(_update->perform(RequestOperation::PerformModeBlocking, _operationTimeout)) {
+        return updateReply(_update->networkReply(), rule);
     }
     return false;
 }
@@ -125,23 +125,23 @@ bool Acl::watchB(QString calendarId)
 // Async
 bool Acl::deleteNB(QString calendarId, QString ruleId)
 {
-    _deleteRequest->setAccessToken(_accessToken);
-    _deleteRequest->setParameters(calendarId, ruleId);
-    return _deleteRequest->perform(RequestOperation::PerformModeNonBlocking, _operationTimeout);
+    _delete->setAccessToken(_accessToken);
+    _delete->setParameters(calendarId, ruleId);
+    return _delete->perform(RequestOperation::PerformModeNonBlocking, _operationTimeout);
 }
 
 bool Acl::getNB(QString calendarId, QString ruleId)
 {
-    _getRequest->setAccessToken(_accessToken);
-    _getRequest->setParameters(calendarId, ruleId);
-    return _getRequest->perform(RequestOperation::PerformModeNonBlocking, _operationTimeout);
+    _get->setAccessToken(_accessToken);
+    _get->setParameters(calendarId, ruleId);
+    return _get->perform(RequestOperation::PerformModeNonBlocking, _operationTimeout);
 }
 
 bool Acl::insertNB(QString calendarId, AclRule rule)
 {
-    _insertRequest->setAccessToken(_accessToken);
-    _insertRequest->setParameters(calendarId, rule);
-    return _insertRequest->perform(RequestOperation::PerformModeNonBlocking, _operationTimeout);
+    _insert->setAccessToken(_accessToken);
+    _insert->setParameters(calendarId, rule);
+    return _insert->perform(RequestOperation::PerformModeNonBlocking, _operationTimeout);
 }
 
 bool Acl::listNB(QString calendarId,
@@ -150,29 +150,29 @@ bool Acl::listNB(QString calendarId,
                  bool showDeleted,
                  QString syncToken)
 {
-    _listRequest->setAccessToken(_accessToken);
-    _listRequest->setParameters(calendarId,
+    _list->setAccessToken(_accessToken);
+    _list->setParameters(calendarId,
                             maxResults,
                             pageToken,
                             showDeleted,
                             syncToken);
-    return _listRequest->perform(RequestOperation::PerformModeNonBlocking, _operationTimeout);
+    return _list->perform(RequestOperation::PerformModeNonBlocking, _operationTimeout);
 }
 
 bool Acl::patchNB(QString calendarId, QString ruleId)
 {
-    _patchRequest->setAccessToken(_accessToken);
-    _patchRequest->setParameters(calendarId,
+    _patch->setAccessToken(_accessToken);
+    _patch->setParameters(calendarId,
                                  ruleId);
-    return _patchRequest->perform(RequestOperation::PerformModeNonBlocking, _operationTimeout);
+    return _patch->perform(RequestOperation::PerformModeNonBlocking, _operationTimeout);
 }
 
 bool Acl::updateNB(QString calendarId, QString ruleId)
 {
-    _updateRequest->setAccessToken(_accessToken);
-    _updateRequest->setParameters(calendarId,
+    _update->setAccessToken(_accessToken);
+    _update->setParameters(calendarId,
                                   ruleId);
-    return _updateRequest->perform(RequestOperation::PerformModeNonBlocking, _operationTimeout);
+    return _update->perform(RequestOperation::PerformModeNonBlocking, _operationTimeout);
 }
 
 bool Acl::watchNB(QString calendarId)
@@ -189,15 +189,15 @@ void Acl::handleReplyNonBlocking(RequestOperation *request,
     // Schedule network reply for deletion
     networkReply->deleteLater();
 
-    if(request == _deleteRequest) {
+    if(request == _delete) {
         bool success;
-        if(deleteReply(networkReply, success)) {
-            emit deleteFinished(success);
+        if(deleteReply(networkReply)) {
+            emit deleteFinished();
         } else {
             emit deleteFailed(errorString());
         }
     } else
-    if(request == _getRequest) {
+    if(request == _get) {
         AclRule rule;
         if(getReply(networkReply, rule)) {
             emit getFinished(rule);
@@ -205,7 +205,7 @@ void Acl::handleReplyNonBlocking(RequestOperation *request,
             emit getFailed(errorString());
         }
     } else
-    if(request == _insertRequest) {
+    if(request == _insert) {
         AclRule rule;
         if(insertReply(networkReply, rule)) {
             emit insertFinished(rule);
@@ -213,10 +213,10 @@ void Acl::handleReplyNonBlocking(RequestOperation *request,
             emit insertFailed(errorString());
         }
     } else
-    if(request == _listRequest) {
+    if(request == _list) {
         // TODO: Implement.
     } else
-    if(request == _patchRequest) {
+    if(request == _patch) {
         AclRule rule;
         if(patchReply(networkReply, rule)) {
             emit patchFinished(rule);
@@ -224,7 +224,7 @@ void Acl::handleReplyNonBlocking(RequestOperation *request,
             emit patchFailed(errorString());
         }
     } else
-    if(request == _updateRequest) {
+    if(request == _update) {
         AclRule rule;
         if(updateReply(networkReply, rule)) {
             emit updateFinished(rule);
@@ -232,17 +232,16 @@ void Acl::handleReplyNonBlocking(RequestOperation *request,
             emit updateFailed(errorString());
         }
     } else
-    if(request == _watchRequest) {
+    if(request == _watch) {
         // TODO: Implement.
     } else {
         qDebug() << "Warning: Received response for unknown request.";
     }
 }
 
-bool Acl::deleteReply(QNetworkReply *networkReply, bool& success)
+bool Acl::deleteReply(QNetworkReply *networkReply)
 {
     if(networkReply->error() == QNetworkReply::NoError) {
-        success = networkReply->readAll().isEmpty();
         return true;
     } else {
         return false;
@@ -251,62 +250,25 @@ bool Acl::deleteReply(QNetworkReply *networkReply, bool& success)
 
 bool Acl::getReply(QNetworkReply *networkReply, AclRule& rule)
 {
-    // Check if any network errors occured.
-    if(networkReply->error() == QNetworkReply::NoError) {
-        // Parse reply
-        QJsonDocument replyDocument = QJsonDocument::fromJson(networkReply->readAll());
-        if(rule.fromJson(replyDocument.object())) {
-            _errorString = "";
-            return true;
-        } else {
-            _errorString = tr("Failed to decode acl rule from json.");
-            return false;
-        }
-    } else {
-        _errorString = networkReply->errorString();
-        return false;
-    }
+    return decodeRuleFromReply(networkReply, rule);
 }
 
 bool Acl::insertReply(QNetworkReply *networkReply, AclRule& rule)
 {
-    // Check if any network errors occured.
-    if(networkReply->error() == QNetworkReply::NoError) {
-        // Parse reply
-        QJsonDocument replyDocument = QJsonDocument::fromJson(networkReply->readAll());
-        if(rule.fromJson(replyDocument.object())) {
-            _errorString = "";
-            return true;
-        } else {
-            _errorString = tr("Failed to decode acl rule from json.");
-            return false;
-        }
-    } else {
-        _errorString = networkReply->errorString();
-        return false;
-    }
+    return decodeRuleFromReply(networkReply, rule);
 }
 
 bool Acl::patchReply(QNetworkReply *networkReply, AclRule& rule)
 {
-    // Check if any network errors occured.
-    if(networkReply->error() == QNetworkReply::NoError) {
-        // Parse reply
-        QJsonDocument replyDocument = QJsonDocument::fromJson(networkReply->readAll());
-        if(rule.fromJson(replyDocument.object())) {
-            _errorString = "";
-            return true;
-        } else {
-            _errorString = tr("Failed to decode acl rule from json.");
-            return false;
-        }
-    } else {
-        _errorString = networkReply->errorString();
-        return false;
-    }
+    return decodeRuleFromReply(networkReply, rule);
 }
 
 bool Acl::updateReply(QNetworkReply *networkReply, AclRule& rule)
+{
+    return decodeRuleFromReply(networkReply, rule);
+}
+
+bool Acl::decodeRuleFromReply(QNetworkReply *networkReply, AclRule& rule)
 {
     // Check if any network errors occured.
     if(networkReply->error() == QNetworkReply::NoError) {
@@ -324,6 +286,7 @@ bool Acl::updateReply(QNetworkReply *networkReply, AclRule& rule)
         return false;
     }
 }
+
 
 void Acl::requestTimedOut(RequestOperation *request)
 {

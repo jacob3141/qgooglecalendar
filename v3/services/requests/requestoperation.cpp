@@ -84,6 +84,9 @@ bool RequestOperation::perform(PerformMode performMode, int timeout)
         // TODO
         //_networkAccessManager.sendCustomRequest(networkRequest(), "PATCH", bodyData());
         break;
+    case HttpMethodCustom:
+        // TODO
+        break;
     }
 
     if(_performMode == PerformModeBlocking) {

@@ -24,6 +24,10 @@
 // Own includes
 #include "v3/services/service.h"
 
+#include "v3/services/requests/settingsget.h"
+#include "v3/services/requests/settingslist.h"
+#include "v3/services/requests/settingswatch.h"
+
 /**
  * Service for Settings endpoint as specified by Google.
  * @see https://developers.google.com/google-apps/calendar/v3/reference/settings

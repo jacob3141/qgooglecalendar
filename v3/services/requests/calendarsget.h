@@ -22,22 +22,46 @@
 #pragma once
 
 // Own includes
-#include "v3/services/service.h"
-
-#include "v3/services/requests/freebusyquery.h"
+#include "requestoperation.h"
+#include "v3/services/requestdelegate.h"
 
 namespace APIV3 {
 
-class Freebusy : public Service
-{
-    Q_OBJECT
+class CalendarsGet : public RequestOperation {
 public:
-    explicit Freebusy(QObject *parent = 0);
+    CalendarsGet(RequestOperationDelegate *requestDelegate, QObject *parent = 0)
+        : RequestOperation(requestDelegate, parent) {
+    }
 
-signals:
+    void setParameters(QString calendarId) {
+        _calendarId = calendarId;
+    }
 
-public slots:
+    QNetworkRequest networkRequest() {
+        QNetworkRequest networkRequest;
+        networkRequest.setUrl(QString("%1/calendars/%2")
+                              .arg(baseUrl())
+                              .arg(_calendarId));
+        networkRequest.setHeader(QNetworkRequest::ContentTypeHeader,
+                                 "application/x-www-form-urlencoded");
+        networkRequest.setHeader(QNetworkRequest::UserAgentHeader,
+                                 userAgent());
+        return networkRequest;
+    }
 
+    HttpMethod httpMethod() {
+        return HttpMethodGet;
+    }
+
+    QStringList requiredScopes() {
+        QStringList scopes;
+        scopes << "https://www.googleapis.com/auth/calendar.readonly"
+               << "https://www.googleapis.com/auth/calendar";
+        return scopes;
+    }
+
+private:
+    QString _calendarId;
 };
 
 } // APIV3

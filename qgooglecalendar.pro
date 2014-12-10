@@ -60,7 +60,30 @@ HEADERS += \
     v3/services/requests/calendarlistupdate.h \
     v3/services/requests/calendarlistwatch.h \
     v3/services/requests/acldelete.h \
-    v3/services/requests/calendarlistdelete.h
+    v3/services/requests/calendarlistdelete.h \
+    v3/services/requests/calendarsclear.h \
+    v3/services/requests/calendarsdelete.h \
+    v3/services/requests/calendarsget.h \
+    v3/services/requests/calendarsinsert.h \
+    v3/services/requests/calendarspatch.h \
+    v3/services/requests/calendarsupdate.h \
+    v3/services/requests/channelsstop.h \
+    v3/services/requests/colorsget.h \
+    v3/services/requests/eventsdelete.h \
+    v3/services/requests/eventsget.h \
+    v3/services/requests/eventsimport.h \
+    v3/services/requests/eventsinsert.h \
+    v3/services/requests/eventsinstances.h \
+    v3/services/requests/eventslist.h \
+    v3/services/requests/eventsmove.h \
+    v3/services/requests/eventspatch.h \
+    v3/services/requests/eventsquickadd.h \
+    v3/services/requests/eventsupdate.h \
+    v3/services/requests/eventswatch.h \
+    v3/services/requests/freebusyquery.h \
+    v3/services/requests/settingsget.h \
+    v3/services/requests/settingslist.h \
+    v3/services/requests/settingswatch.h
 
 SOURCES += \
     googlecalendarservice.cpp \
